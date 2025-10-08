@@ -50,6 +50,22 @@ export const useProductForm = () => {
             loadSavedItems(); // Refresh when tab comes into focus
         }, [])
     );
+
+
+    const updateItem = async (itemId: string, updatedData: any) => {
+        try {
+          const updatedItems = savedItems.map(item => 
+            item.id === itemId ? { ...item, ...updatedData } : item
+          );
+          setSavedItems(updatedItems);
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
+          return true;
+        } catch (error) {
+          console.error('Error updating item:', error);
+          return false;
+        }
+      };
+
     const loadSavedItems = async () => {
         try {
             const storedItems = await AsyncStorage.getItem(STORAGE_KEY);
@@ -157,6 +173,8 @@ export const useProductForm = () => {
         getFormData,
         loadSavedItems, // <- Make sure it's included here for refreshing purpose
         deleteItem, // Add this line
+        updateItem, // Add this
+
 
 
     };

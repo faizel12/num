@@ -24,6 +24,8 @@ export default function RootLayout() {
           headerBackTitle: 'Back' // For iOS - back button text
         }}
       />
+      <Stack.Screen name="edit/[id]" options={{ title: 'Edit Item' }} />
+
     </Stack>
   );
 }
