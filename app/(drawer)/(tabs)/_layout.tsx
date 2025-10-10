@@ -36,27 +36,25 @@ import { Tabs } from 'expo-router';
 export default function TabLayout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: 'blue', headerShown: true }}>
-      <Tabs.Screen
+ 
+ <Tabs.Screen
         name="index"
         options={{
-          title: 'Add Item',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="plus" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="list"
-        options={{
+          headerShown:false,
+
           title: 'All Items',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="list" color={color} />,
         }}
       />
-      {/* <Tabs.Screen
-              name="details"
-              options={{
-                  title: 'Item Details',
-                  tabBarIcon: ({ color }) => <FontAwesome size={28} name="info" color={color} />,
+      <Tabs.Screen
+        name="addItem"
+        options={{
+          headerShown:false,
+          title: 'Add Item',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="plus" color={color} />,
         }}
-      /> */}
+      />
+
     </Tabs>
   );
 }

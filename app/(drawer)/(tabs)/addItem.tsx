@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import ProductForm from '../../components/ProductForm'; // Adjust the import path to where your component is located
+import ProductForm from '../../../components/ProductForm'; // Adjust the import path to where your component is located
 
 const App = () => {
   return (
