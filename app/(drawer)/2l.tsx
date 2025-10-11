@@ -9,7 +9,7 @@ export default function TwoLScreen() {
   const { savedItems, deleteItem } = useProductForm();
 
   // Filter items for 5l cars
-  const filteredItems = savedItems.filter(item => item.size === '2l');
+  const filteredItems = savedItems.filter(item => item.size === '2L');
 
   const handleDelete = async (itemId: string) => {
     // Your existing delete logic

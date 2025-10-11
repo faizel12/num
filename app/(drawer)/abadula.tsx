@@ -9,7 +9,7 @@ export default function AbadulaScreen() {
   const { savedItems, deleteItem } = useProductForm();
 
   // Filter items for 5l cars
-  const filteredItems = savedItems.filter(item => item.size === '5l');
+  const filteredItems = savedItems.filter(item => item.size === 'Abadula');
 
   const handleDelete = async (itemId: string) => {
     // Your existing delete logic

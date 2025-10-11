@@ -9,7 +9,7 @@ export default function ThreeLScreen() {
   const { savedItems, deleteItem } = useProductForm();
 
   // Filter items for 5l cars
-  const filteredItems = savedItems.filter(item => item.size === '5l');
+  const filteredItems = savedItems.filter(item => item.size === '3L');
 
   const handleDelete = async (itemId: string) => {
     // Your existing delete logic

@@ -17,7 +17,7 @@ export const useProductForm = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [savedItems, setSavedItems] = useState<any[]>([]);
 
-    const carType = ['5L', '3L', 'Dolphin', 'Abadula'];
+    const carType = ['5L', '3L', 'Dolphin', 'Abadula','2L','Other'];
     const conditionOptions = ['new', 'dubai'];
     const partOptions = ['Motor',
         'Leg',
@@ -79,7 +79,7 @@ export const useProductForm = () => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
+            mediaTypes: ['images','videos'],
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
