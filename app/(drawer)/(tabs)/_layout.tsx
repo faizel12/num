@@ -35,7 +35,7 @@ export default function TabLayout() {
       }}>
       {/* Your Screen options remain the same */}
       <Tabs.Screen
-        name="index"
+        name="list"
         options={{
           title: 'All Items',
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="list" color={color} />,
