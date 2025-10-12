@@ -23,10 +23,23 @@ export default function DetailScreen() {
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Item Details</Text>
 
-            {item.imageUri && (
+            {/* {item.imageUri && (
                 <Image source={{ uri: item.imageUri }} style={styles.image} />
-            )}
+            )} */}
 
+{item.imageUris && item.imageUris.length > 0 && (
+                                <ScrollView horizontal 
+                                style={styles.savedImagesContainer}
+                                >
+                                    {item.imageUris.map((imageUri:any, index:any) => (
+                                        <Image 
+                                            key={index} 
+                                            source={{ uri: imageUri }} 
+                                            style={styles.savedImage} 
+                                        />
+                                    ))}
+                                </ScrollView>
+                            )}
             <View style={styles.detailCard}>
 
                 <View style={styles.detailRow}>
@@ -109,5 +122,15 @@ const styles = StyleSheet.create({
         color: '#2ecc71',
         flex: 1,
         textAlign: 'right'
+    },
+    savedImagesContainer: {
+        flexDirection: 'row',
+        marginBottom: 10,
+    },
+    savedImage: {
+        width: 120,
+        height: 120,
+        borderRadius: 6,
+        marginRight: 10,
     },
 });

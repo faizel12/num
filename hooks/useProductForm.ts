@@ -1,8 +1,9 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
+
+import { useImagePicker } from './useImagePicker'; // Adjust the import path as needed
 
 // Key for storing data in AsyncStorage
 const STORAGE_KEY = 'product_form_data';
@@ -14,7 +15,12 @@ export const useProductForm = () => {
     const [description, setDescription] = useState('');
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+   
+   
+    // const [selectedImage, setSelectedImage] = useState<string | null>(null);
+   
+        // Replace the single image state and function with the new hook
+        const { selectedImages, pickImages, takePhoto, removeImage, clearAllImages } = useImagePicker();   
     const [savedItems, setSavedItems] = useState<any[]>([]);
 
     const carType = ['5L', '3L', 'Dolphin', 'Abadula','2L','Other'];
@@ -77,37 +83,59 @@ export const useProductForm = () => {
         }
     };
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images','videos'],
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
+    // const pickImage = async () => {
+    //     let result = await ImagePicker.launchImageLibraryAsync({
+    //         mediaTypes: ['images','videos'],
+    //         allowsEditing: true,
+    //         aspect: [4, 3],
+    //         quality: 1,
+    //     });
 
-        if (!result.canceled) {
-            setSelectedImage(result.assets[0].uri);
-        }
-    };
+    //     if (!result.canceled) {
+    //         setSelectedImage(result.assets[0].uri);
+    //     }
+    // };
 
-    // Save current form data to AsyncStorage
+    // // Save current form data to AsyncStorage
+    // const saveFormData = async () => {
+    //     try {
+    //         const formData = getFormData();
+    //         const newItem = {
+    //             ...formData,
+    //             id: Date.now().toString(), // Unique ID for each item
+    //             timestamp: new Date().toISOString()
+    //         };
+
+    //         const updatedItems = [...savedItems, newItem];
+    //         setSavedItems(updatedItems);
+
+    //         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
+
+    //         // Clear form after successful save
+    //         clearForm();
+
+    //         return true;
+    //     } catch (error) {
+    //         console.error('Error saving form data:', error);
+    //         return false;
+    //     }
+    // };
+
     const saveFormData = async () => {
         try {
             const formData = getFormData();
             const newItem = {
                 ...formData,
-                id: Date.now().toString(), // Unique ID for each item
-                timestamp: new Date().toISOString()
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                imageUris: selectedImages // Save array of URIs
             };
 
             const updatedItems = [...savedItems, newItem];
             setSavedItems(updatedItems);
 
             await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
-
-            // Clear form after successful save
             clearForm();
-
             return true;
         } catch (error) {
             console.error('Error saving form data:', error);
@@ -115,16 +143,27 @@ export const useProductForm = () => {
         }
     };
 
-    // Clear only the form inputs (without affecting saved items)
-    const clearForm = () => {
-        setSelectedSize(null);
-        setSelectedCondition(null);
-        setSelectedPart(null);
-        setDescription('');
-        setName('');
-        setPrice('');
-        setSelectedImage(null);
-    };
+    // // Clear only the form inputs (without affecting saved items)
+    // const clearForm = () => {
+    //     setSelectedSize(null);
+    //     setSelectedCondition(null);
+    //     setSelectedPart(null);
+    //     setDescription('');
+    //     setName('');
+    //     setPrice('');
+    //     setSelectedImage(null);
+    // };
+
+        // Update clearForm to use the new clear function
+        const clearForm = () => {
+            setSelectedSize(null);
+            setSelectedCondition(null);
+            setSelectedPart(null);
+            setDescription('');
+            setName('');
+            setPrice('');
+            clearAllImages(); // Clear the multiple images
+        };
 
     // Clear all saved items from storage
     const clearAllSavedItems = async () => {
@@ -138,15 +177,25 @@ export const useProductForm = () => {
         }
     };
 
-    const getFormData = () => ({
-        size: selectedSize,
-        condition: selectedCondition,
-        part: selectedPart,
-        description,
-        name,
-        price,
-        imageUri: selectedImage
-    });
+    // const getFormData = () => ({
+    //     size: selectedSize,
+    //     condition: selectedCondition,
+    //     part: selectedPart,
+    //     description,
+    //     name,
+    //     price,
+    //     imageUri: selectedImage
+    // });
+        // Update getFormData to return multiple images
+        const getFormData = () => ({
+            size: selectedSize,
+            condition: selectedCondition,
+            part: selectedPart,
+            description,
+            name,
+            price,
+            imageUris: selectedImages // Change from imageUri to imageUris
+        });
 
     return {
         selectedSize,
@@ -161,8 +210,12 @@ export const useProductForm = () => {
         setName,
         price,
         setPrice,
-        selectedImage,
-        pickImage,
+        // selectedImage,
+        // pickImage,
+        selectedImages,
+        pickImages,
+        takePhoto, // Make sure this is included
+        removeImage,
         carType,
         conditionOptions,
         partOptions,

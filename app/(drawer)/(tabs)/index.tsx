@@ -28,14 +28,6 @@ export default function ListScreen() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  // // Filter the items based on selected car
-  // const filteredItems = selectedCarFilter
-  //     ? savedItems.filter(item => item.size === selectedCarFilter)
-  //     : savedItems;
-
-  // // Get unique car names for the filter
-  // const availableCars = [...new Set(savedItems.map(item => item.size))].filter(Boolean);
-
   const filteredByCar = selectedCarFilter
     ? savedItems.filter((item) => item.size === selectedCarFilter)
     : savedItems;
@@ -74,9 +66,10 @@ export default function ListScreen() {
         style={styles.contentArea}
         onPress={() => handleItemPress(item.id)}
       >
+
         <View key={item.id} style={styles.savedItem}>
-          {item.imageUri && (
-            <Image source={{ uri: item.imageUri }} style={styles.savedImage} />
+          {item.imageUris && (
+            <Image source={{ uri: item.imageUris[0] }} style={styles.savedImage} />
           )}
           <View>
             <Text style={styles.itemName}> {item.name}</Text>
@@ -88,6 +81,7 @@ export default function ListScreen() {
           </View>
         </View>
       </TouchableOpacity>
+  
 
       {/* Icons that are separate from the content */}
       <View style={styles.iconRow}>
@@ -212,7 +206,7 @@ export default function ListScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
+  container: { flex: 1, padding: 16, },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 16 },
   searchContainer: {
     position: "relative",

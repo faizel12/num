@@ -1,40 +1,73 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useProductForm } from '../../hooks/useProductForm';
 
-export default function OtherScreen() {
+export default function ThreeLScreen() {
   const router = useRouter();
   const { savedItems, deleteItem } = useProductForm();
 
   // Filter items for 5l cars
   const filteredItems = savedItems.filter(item => item.size === 'Other');
 
+  // Add delete handler function
   const handleDelete = async (itemId: string) => {
-    // Your existing delete logic
+    Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          const success = await deleteItem(itemId);
+          if (success) {
+            // Item will be automatically removed from the list
+          }
+        },
+      },
+    ]);
   };
 
-  const renderItem = ({ item }:any) => (
+  const handleItemPress = (itemId: string) => {
+    // Navigate to the detail screen with the item ID
+    router.push(`/detail/${itemId}`);
+  };
+
+  const renderItem = ({ item }: any) => (
     <View style={styles.itemContainer}>
-      <TouchableOpacity 
+      {/* Content area that's clickable for navigation */}
+      <TouchableOpacity
         style={styles.contentArea}
-        onPress={() => router.push(`/detail/${item.id}`)}
+        onPress={() => handleItemPress(item.id)}
       >
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemDetails}>
-          Condition: {item.condition} | Part: {item.part} | Price: {item.price}
-        </Text>
+
+        <View key={item.id} style={styles.savedItem}>
+          {item.imageUris && (
+            <Image source={{ uri: item.imageUris[0] }} style={styles.savedImage} />
+          )}
+          <View>
+            <Text style={styles.itemName}> {item.name}</Text>
+
+            <View style={{ marginTop:3,flexDirection: "row", alignItems: "center" }}>
+              <Text>Car Type </Text>
+              <Text style={styles.itemName}>{item.size}</Text>
+            </View>
+          </View>
+        </View>
       </TouchableOpacity>
-      
+  
+
+      {/* Icons that are separate from the content */}
       <View style={styles.iconRow}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.iconButton}
           onPress={() => router.push(`/edit/${item.id}`)}
         >
           <FontAwesome name="pencil" size={16} color="#666" />
         </TouchableOpacity>
-        <TouchableOpacity 
+
+        {/* Delete icon */}
+        <TouchableOpacity
           style={styles.iconButton}
           onPress={() => handleDelete(item.id)}
         >
@@ -46,7 +79,7 @@ export default function OtherScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Other Items ({filteredItems.length})</Text>
+      <Text style={styles.title}>3l Items ({filteredItems.length})</Text>
       <FlatList
         data={filteredItems}
         renderItem={renderItem}
@@ -86,4 +119,11 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   emptyText: { textAlign: 'center', marginTop: 20, fontSize: 16 },
+  savedImage: { width: 60, height: 60, borderRadius: 4, marginRight: 10 },
+  savedItem: {
+    backgroundColor: "#fff",
+    padding: 5,
+    borderRadius: 8,
+    flexDirection: "row",
+  },
 });
