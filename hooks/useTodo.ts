@@ -63,7 +63,7 @@ export class EthiopianDateConverter {
         'መጋቢት', 'ሚያዝያ', 'ግንቦት', 'ሰኔ', 'ሐምሌ', 'ነሐሴ', 'ጷጉሜን'
       ];
       
-      const monthName = monthNames[month - 1] || `Month ${month}`;
+      const monthName = monthNames[month - 2] || `Month ${month}`;
       return `${day} ${monthName} ${year}`;
     } catch (error) {
       console.error('Error formatting Ethiopian date:', error);

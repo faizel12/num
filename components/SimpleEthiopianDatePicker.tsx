@@ -1,12 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 interface SimpleEthiopianDatePickerProps {
@@ -154,42 +154,6 @@ const EthiopianDateUtils = {
     }
   },
 
-//   // Convert Ethiopian to Gregorian date (simplified)
-//   ethiopianToGregorian: (ethYear: number, ethMonth: number, ethDay: number): Date => {
-//     // Simplified conversion for demo purposes
-//     const gregYear = ethYear + 8;
-//     let gregMonth, gregDay;
-
-//     if (ethMonth <= 4) {
-//       // Meskerem to Tir (September to January)
-//       gregMonth = ethMonth + 8;
-//       gregDay = ethDay + 10;
-//     } else {
-//       // Yekatit to Pagume (February to September)
-//       gregMonth = ethMonth - 4;
-//       gregDay = ethDay;
-//     }
-
-//     // Handle month overflow
-//     if (gregMonth > 12) {
-//       gregMonth = gregMonth - 12;
-//       // Note: In reality, year would increment here
-//     }
-
-//     // Handle day overflow (simplified)
-//     const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-//     if (gregDay > monthDays[gregMonth - 1]) {
-//       gregDay = gregDay - monthDays[gregMonth - 1];
-//       gregMonth++;
-      
-//       if (gregMonth > 12) {
-//         gregMonth = 1;
-//         // Note: Year would increment here in real conversion
-//       }
-//     }
-
-//     return new Date(gregYear, gregMonth - 1, gregDay);
-//   },
 
   // Get current Ethiopian date
   getCurrentEthiopianDate: () => {
@@ -203,7 +167,7 @@ const EthiopianDateUtils = {
       'መጋቢት', 'ሚያዝያ', 'ግንቦት', 'ሰኔ', 'ሐምሌ', 'ነሃሴ', 'ጷጉሜን'
     ];
     
-    const monthName = monthNames[ethDate.month - 1] || `Month ${ethDate.month}`;
+    const monthName = monthNames[ethDate.month - 2] || `Month ${ethDate.month}`;
     return `${ethDate.day} ${monthName} ${ethDate.year}`;
   }
 };
@@ -335,13 +299,13 @@ const SimpleEthiopianDatePicker: React.FC<SimpleEthiopianDatePickerProps> = ({
 
           {/* Month/Year Navigation */}
           <View style={styles.navigation}>
-            <TouchableOpacity onPress={() => changeMonth(-1)} style={styles.navButton}>
+            <TouchableOpacity onPress={() => changeMonth(-2)} style={styles.navButton}>
               <Ionicons name="chevron-back" size={20} color="#0A1931" />
             </TouchableOpacity>
             
             <View style={styles.monthYear}>
               <Text style={styles.monthYearText}>
-                {ethiopianMonths[currentDate.month - 1]} {currentDate.year}
+                {ethiopianMonths[currentDate.month - 2]} {currentDate.year}
               </Text>
               {isCurrentMonthToday && (
                 <Text style={styles.currentMonthText}>(Current Month)</Text>
