@@ -96,7 +96,7 @@ export default function TabLayout() {
       }}>
       
       <Tabs.Screen
-        name="list"
+        name="index"
         options={{
           title: 'All Items',
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="list" color={color} />,

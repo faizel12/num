@@ -11,16 +11,34 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import SimpleEthiopianDatePicker from '../../components/SimpleEthiopianDatePicker';
 import { useTodo } from '../../hooks/useTodo';
 
 export default function TodoScreen() {
-  const { todos, addTodo, toggleTodo, deleteTodo, clearCompleted } = useTodo();
+  const { 
+    todos, 
+    addTodo, 
+    toggleTodo, 
+    deleteTodo, 
+    clearCompleted, 
+    isOverdue, 
+    formatEthiopianDate, 
+    gregorianToEthiopian,
+     
+  } = useTodo();
+  
   const [newTodo, setNewTodo] = useState('');
+  const [dueDate, setDueDate] = useState<Date | undefined>();
+  const [showEthiopianDatePicker, setShowEthiopianDatePicker] = useState(false);
 
   const handleAddTodo = () => {
     if (newTodo.trim()) {
-      addTodo(newTodo);
+      addTodo(newTodo, dueDate);
       setNewTodo('');
+      setDueDate(undefined);
+      Alert.alert('Success', 'Todo added successfully!');
+    } else {
+      Alert.alert('Error', 'Please enter a task description');
     }
   };
 
@@ -49,8 +67,25 @@ export default function TodoScreen() {
     }
   };
 
-  const renderTodoItem = ({ item }: { item: TodoItem }) => (
-    <View style={[styles.todoItem, item.completed && styles.completedItem]}>
+  const handleDateSelect = (date: Date) => {
+    console.log('Selected date:', date);
+    setDueDate(date);
+    setShowEthiopianDatePicker(false);
+    
+    // Show confirmation with Ethiopian date
+    const ethDate = gregorianToEthiopian(date);
+    Alert.alert(
+      'Date Selected', 
+      `Ethiopian: ${formatEthiopianDate(ethDate)}`
+    );
+  };
+
+  const renderTodoItem = ({ item }: { item: any }) => (
+    <View style={[
+      styles.todoItem, 
+      item.completed && styles.completedItem,
+      isOverdue(item) && !item.completed && styles.overdueItem
+    ]}>
       <TouchableOpacity
         style={[styles.checkbox, item.completed && styles.checkedBox]}
         onPress={() => toggleTodo(item.id)}
@@ -58,9 +93,32 @@ export default function TodoScreen() {
         {item.completed && <Ionicons name="checkmark" size={16} color="white" />}
       </TouchableOpacity>
       
-      <Text style={[styles.todoText, item.completed && styles.completedText]}>
-        {item.text}
-      </Text>
+      <View style={styles.todoContent}>
+        <Text style={[styles.todoText, item.completed && styles.completedText]}>
+          {item.text}
+        </Text>
+        
+        {/* Ethiopian Due Date Display */}
+        {item.dueDateEthiopian && (
+          <View style={[
+            styles.dueDateBadge,
+            isOverdue(item) && !item.completed && styles.overdueBadge
+          ]}>
+            <Ionicons 
+              name="calendar" 
+              size={12} 
+              color={isOverdue(item) && !item.completed ? '#ff4444' : '#FFD700'} 
+            />
+            <Text style={[
+              styles.dueDateText,
+              isOverdue(item) && !item.completed && styles.overdueText
+            ]}>
+              {formatEthiopianDate(item.dueDateEthiopian)}
+              {isOverdue(item) && !item.completed && ' (Overdue)'}
+            </Text>
+          </View>
+        )}
+      </View>
       
       <TouchableOpacity
         style={styles.deleteButton}
@@ -71,6 +129,8 @@ export default function TodoScreen() {
     </View>
   );
 
+
+
   const completedCount = todos.filter(todo => todo.completed).length;
   const activeCount = todos.length - completedCount;
 
@@ -79,48 +139,87 @@ export default function TodoScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Text style={styles.title}>Todo List</Text>
+      {/* Header */}
+      {/* <View style={styles.header}>
+        <Text style={styles.title}>📝 Todo List</Text>
+        <Text style={styles.subtitle}>Manage your tasks with Ethiopian dates</Text>
+      </View> */}
 
-      {/* Add Todo Input */}
-      <View style={styles.inputContainer}>
+      {/* Add Todo Section */}
+      <View style={styles.addSection}>
+        <Text style={styles.sectionTitle}>Add New Task</Text>
+        
         <TextInput
           style={styles.input}
-          placeholder="Add a new task..."
+          placeholder="Enter your task..."
+          placeholderTextColor="#888"
           value={newTodo}
           onChangeText={setNewTodo}
           onSubmitEditing={handleAddTodo}
           returnKeyType="done"
-          multiline
         />
+
+        {/* Date Picker Button */}
+        <TouchableOpacity 
+  style={styles.datePickerButton}
+  onPress={() => setShowEthiopianDatePicker(true)}
+>
+  <Ionicons name="calendar-outline" size={20} color="#FFD700" />
+  <Text style={styles.datePickerText}>
+    {dueDate 
+      ? `📅 ${formatEthiopianDate(gregorianToEthiopian(dueDate))}` 
+      : `📅 Today: ${formatEthiopianDate(gregorianToEthiopian(new Date()))}`
+    }
+  </Text>
+</TouchableOpacity>
+
         <TouchableOpacity style={styles.addButton} onPress={handleAddTodo}>
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons name="add" size={24} color="#0A1931" />
+          <Text style={styles.addButtonText}>Add Task</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Stats */}
-      <View style={styles.statsContainer}>
-        <Text style={styles.statsText}>
-          {activeCount} active, {completedCount} completed
-        </Text>
+      {/* Stats Section */}
+      <View style={styles.statsSection}>
+        <View style={styles.statItem}>
+          <Text style={styles.statNumber}>{activeCount}</Text>
+          <Text style={styles.statLabel}>Active</Text>
+        </View>
+        <View style={styles.statItem}>
+          <Text style={styles.statNumber}>{completedCount}</Text>
+          <Text style={styles.statLabel}>Completed</Text>
+        </View>
         {completedCount > 0 && (
-          <TouchableOpacity onPress={handleClearCompleted}>
-            <Text style={styles.clearText}>Clear Completed</Text>
+          <TouchableOpacity style={styles.clearButton} onPress={handleClearCompleted}>
+            <Text style={styles.clearButtonText}>Clear Completed</Text>
           </TouchableOpacity>
         )}
       </View>
 
       {/* Todo List */}
-      <FlatList
-        data={todos}
-        renderItem={renderTodoItem}
-        keyExtractor={item => item.id}
-        style={styles.list}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            No tasks yet. Add something to do!
-          </Text>
-        }
+      <View style={styles.listSection}>
+        <Text style={styles.sectionTitle}>Your Tasks ({todos.length})</Text>
+        <FlatList
+          data={todos}
+          renderItem={renderTodoItem}
+          keyExtractor={item => item.id}
+          style={styles.list}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <Ionicons name="checkmark-done-circle-outline" size={64} color="#444" />
+              <Text style={styles.emptyText}>No tasks yet</Text>
+              <Text style={styles.emptySubtext}>Add your first task above!</Text>
+            </View>
+          }
+        />
+      </View>
+
+      {/* Ethiopian Date Picker Modal */}
+      <SimpleEthiopianDatePicker
+        visible={showEthiopianDatePicker}
+        onClose={() => setShowEthiopianDatePicker(false)}
+        onDateSelect={handleDateSelect}
       />
     </KeyboardAvoidingView>
   );
@@ -129,104 +228,219 @@ export default function TodoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0A1931', // Dark blue background
     padding: 16,
-    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 24,
+    marginTop: 16,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#0A1931',
-    marginBottom: 20,
+    color: '#FFD700', // Gold color
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#CCCCCC',
     textAlign: 'center',
   },
-  inputContainer: {
-    flexDirection: 'row',
+  addSection: {
+    backgroundColor: '#1a2b4d',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 12,
   },
   input: {
-    flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#2d3e5d',
+    color: 'white',
     padding: 12,
     borderRadius: 8,
-    marginRight: 8,
     fontSize: 16,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#3d4e6d',
+  },
+  datePickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2d3e5d',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#3d4e6d',
+  },
+  datePickerText: {
+    color: '#FFD700',
+    fontSize: 14,
+    marginLeft: 8,
+    fontWeight: '500',
   },
   addButton: {
-    backgroundColor: '#0A1931',
-    width: 50,
-    height: 50,
-    borderRadius: 8,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFD700',
+    padding: 16,
+    borderRadius: 8,
   },
-  statsContainer: {
+  addButtonText: {
+    color: '#0A1931',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  statsSection: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
+    backgroundColor: '#1a2b4d',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 16,
-    paddingHorizontal: 8,
   },
-  statsText: {
-    color: '#666',
-    fontSize: 14,
+  statItem: {
+    alignItems: 'center',
   },
-  clearText: {
-    color: '#ff4444',
-    fontSize: 14,
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFD700',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#CCCCCC',
+    marginTop: 4,
+  },
+  clearButton: {
+    backgroundColor: '#ff4444',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  clearButtonText: {
+    color: 'white',
+    fontSize: 12,
     fontWeight: '500',
+  },
+  listSection: {
+    flex: 1,
+    backgroundColor: '#1a2b4d',
+    borderRadius: 12,
+    padding: 16,
   },
   list: {
     flex: 1,
   },
   todoItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    alignItems: 'flex-start',
+    backgroundColor: '#2d3e5d',
     padding: 16,
     borderRadius: 8,
     marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FFD700',
   },
   completedItem: {
-    opacity: 0.7,
+    opacity: 0.6,
+    borderLeftColor: '#4CAF50',
+  },
+  overdueItem: {
+    borderLeftColor: '#ff4444',
   },
   checkbox: {
     width: 24,
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#0A1931',
+    borderColor: '#FFD700',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    marginTop: 2,
   },
   checkedBox: {
-    backgroundColor: '#0A1931',
-    borderColor: '#0A1931',
+    backgroundColor: '#FFD700',
+    borderColor: '#FFD700',
+  },
+  todoContent: {
+    flex: 1,
   },
   todoText: {
-    flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: 'white',
+    marginBottom: 8,
   },
   completedText: {
     textDecorationLine: 'line-through',
-    color: '#666',
+    color: '#888',
+  },
+  dueDateBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#3d4e6d',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  overdueBadge: {
+    backgroundColor: '#5d2d3d',
+  },
+  dueDateText: {
+    fontSize: 10,
+    color: '#FFD700',
+    marginLeft: 4,
+    fontWeight: '500',
+  },
+  overdueText: {
+    color: '#ff4444',
   },
   deleteButton: {
     padding: 4,
+    marginLeft: 8,
+  },
+  emptyState: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 60,
   },
   emptyText: {
-    textAlign: 'center',
-    color: '#666',
-    fontSize: 16,
-    marginTop: 50,
-    fontStyle: 'italic',
+    color: '#CCCCCC',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 16,
   },
+  emptySubtext: {
+    color: '#888',
+    fontSize: 14,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  dueTodayItem: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
+    backgroundColor: '#1a3a5d', // Darker blue background
+  },
+  dueTodayBadge: {
+    backgroundColor: '#007AFF', // Blue background
+    borderWidth: 1,
+    borderColor: '#0056b3',
+  },
+  dueTodayText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+
+  
 });

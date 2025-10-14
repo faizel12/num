@@ -8,13 +8,85 @@ export interface TodoItem {
   text: string;
   completed: boolean;
   createdAt: string;
+  dueDate?: string;
+  dueDateEthiopian?: string;
+  priority: 'low' | 'medium' | 'high';
+}
+
+// Manual Ethiopian date conversion functions
+export class EthiopianDateConverter {
+  // Convert Gregorian to Ethiopian date
+  static  gregorianToEthiopian = (date: Date): string => {
+    try {
+      // Use the same conversion logic as in the date picker
+      const gregDate = new Date(date);
+      const gregYear = gregDate.getFullYear();
+      const gregMonth = gregDate.getMonth() + 1;
+      const gregDay = gregDate.getDate();
+  
+      const ethiopianYear = gregYear - 7;
+      
+      let ethiopianMonth, ethiopianDay;
+      
+      if (gregMonth < 9 || (gregMonth === 9 && gregDay < 11)) {
+        ethiopianMonth = (gregMonth + 3) % 13 || 13;
+        ethiopianDay = Math.max(1, (gregDay + 20) % 30 || 30);
+      } else {
+        ethiopianMonth = gregMonth - 8;
+        ethiopianDay = Math.max(1, gregDay - 10);
+      }
+  
+      // Handle day overflow
+      if (ethiopianDay > 30 && ethiopianMonth !== 13) {
+        ethiopianDay = ethiopianDay - 30;
+        ethiopianMonth++;
+      }
+  
+      if (ethiopianMonth === 13 && ethiopianDay > 6) {
+        ethiopianMonth = 1;
+        ethiopianDay = 1;
+      }
+  
+      return `${ethiopianYear}-${ethiopianMonth.toString().padStart(2, '0')}-${ethiopianDay.toString().padStart(2, '0')}`;
+    } catch (error) {
+      console.error('Error converting to Ethiopian date:', error);
+      return '2016-01-01';
+    }
+  };
+
+  // Format Ethiopian date for display
+  static formatEthiopianDate(ethDateString: string): string {
+    try {
+      const [year, month, day] = ethDateString.split('-').map(Number);
+      const monthNames = [
+        'መስከረም', 'ጥቅምት', 'ኅዳር', 'ታኅሣሥ', 'ጥር', 'የካቲት',
+        'መጋቢት', 'ሚያዝያ', 'ግንቦት', 'ሰኔ', 'ሐምሌ', 'ነሐሴ', 'ጷጉሜን'
+      ];
+      
+      const monthName = monthNames[month - 1] || `Month ${month}`;
+      return `${day} ${monthName} ${year}`;
+    } catch (error) {
+      console.error('Error formatting Ethiopian date:', error);
+      return ethDateString;
+    }
+  }
+
+  // Check if Ethiopian date is overdue
+  static isOverdue(ethDateString: string): boolean {
+    try {
+      const today = new Date();
+      const todayEthiopian = this.gregorianToEthiopian(today);
+      return ethDateString < todayEthiopian;
+    } catch (error) {
+      return false;
+    }
+  }
 }
 
 export const useTodo = () => {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load todos from storage
   useEffect(() => {
     loadTodos();
   }, []);
@@ -41,12 +113,17 @@ export const useTodo = () => {
     }
   };
 
-  const addTodo = async (text: string) => {
+  const addTodo = async (text: string, dueDate?: Date, priority: 'low' | 'medium' | 'high' = 'medium') => {
+    const dueDateEthiopian = dueDate ? EthiopianDateConverter.gregorianToEthiopian(dueDate) : undefined;
+    
     const newTodo: TodoItem = {
       id: Date.now().toString(),
       text: text.trim(),
       completed: false,
       createdAt: new Date().toISOString(),
+      dueDate: dueDate?.toISOString(),
+      dueDateEthiopian,
+      priority,
     };
     await saveTodos([...todos, newTodo]);
   };
@@ -68,6 +145,18 @@ export const useTodo = () => {
     await saveTodos(updatedTodos);
   };
 
+  const updateTodo = async (id: string, updates: Partial<TodoItem>) => {
+    const updatedTodos = todos.map(todo =>
+      todo.id === id ? { ...todo, ...updates } : todo
+    );
+    await saveTodos(updatedTodos);
+  };
+
+  const isOverdue = (todo: TodoItem): boolean => {
+    if (!todo.dueDateEthiopian || todo.completed) return false;
+    return EthiopianDateConverter.isOverdue(todo.dueDateEthiopian);
+  };
+
   return {
     todos,
     loading,
@@ -75,5 +164,10 @@ export const useTodo = () => {
     toggleTodo,
     deleteTodo,
     clearCompleted,
+    updateTodo,
+    isOverdue,
+    formatEthiopianDate: EthiopianDateConverter.formatEthiopianDate,
+    gregorianToEthiopian: EthiopianDateConverter.gregorianToEthiopian,
+    
   };
 };
