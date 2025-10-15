@@ -657,3 +657,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+
+// eas build -p android --profile preview

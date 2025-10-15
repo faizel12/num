@@ -40,11 +40,14 @@
           }
         }
       ],
-      ["expo-image-picker",
+      [
+        "expo-image-picker",
         {
           "photosPermission": "The app needs access to your photos to let you share them.",
           "cameraPermission": "The app needs access to your camera to take photos."
-        }]
+        }
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
