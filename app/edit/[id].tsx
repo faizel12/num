@@ -1,11 +1,11 @@
 // import * as ImagePicker from 'expo-image-picker';
 // import { useLocalSearchParams, useRouter } from 'expo-router';
 // import React, { useEffect, useState } from 'react';
-
 // import {
 //   ActivityIndicator,
 //   Alert,
 //   Image,
+//   Modal,
 //   ScrollView,
 //   StyleSheet,
 //   Text,
@@ -26,8 +26,9 @@
 //   const [selectedPart, setSelectedPart] = useState('');
 //   const [description, setDescription] = useState('');
 //   const [price, setPrice] = useState('');
-//   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+//   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 //   const [loading, setLoading] = useState(true);
+//   const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
 
 //   // Load item data when component mounts
 //   useEffect(() => {
@@ -39,13 +40,41 @@
 //       setSelectedPart(item.part || '');
 //       setDescription(item.description || '');
 //       setPrice(item.price || '');
-//       setSelectedImage(item.imageUri || null);
+      
+//       // Handle both old (imageUri) and new (imageUris) data formats
+//       if (item.imageUris) {
+//         setSelectedImages(item.imageUris);
+//       } else if (item.imageUri) {
+//         setSelectedImages([item.imageUri]);
+//       } else {
+//         setSelectedImages([]);
+//       }
 //     }
 //     setLoading(false);
 //   }, [id, savedItems]);
 
-//   const pickImage = async () => {
+//   const pickImages = async () => {
+//     setImageSourceModalVisible(false);
+    
 //     let result = await ImagePicker.launchImageLibraryAsync({
+//       mediaTypes: ['images'],
+//       allowsMultipleSelection: true,
+//       selectionLimit: 0,
+//       orderedSelection: true,
+//       aspect: [4, 3],
+//       quality: 1,
+//     });
+
+//     if (!result.canceled) {
+//       const uris = result.assets.map(asset => asset.uri);
+//       setSelectedImages(prev => [...prev, ...uris]);
+//     }
+//   };
+
+//   const takePhoto = async () => {
+//     setImageSourceModalVisible(false);
+    
+//     let result = await ImagePicker.launchCameraAsync({
 //       mediaTypes: ['images'],
 //       allowsEditing: true,
 //       aspect: [4, 3],
@@ -53,8 +82,13 @@
 //     });
 
 //     if (!result.canceled) {
-//       setSelectedImage(result.assets[0].uri);
+//       const newImageUri = result.assets[0].uri;
+//       setSelectedImages(prev => [...prev, newImageUri]);
 //     }
+//   };
+
+//   const removeImage = (index: number) => {
+//     setSelectedImages(prev => prev.filter((_, i) => i !== index));
 //   };
 
 //   const handleUpdate = async () => {
@@ -70,7 +104,7 @@
 //       part: selectedPart,
 //       description,
 //       price,
-//       imageUri: selectedImage
+//       imageUris: selectedImages // Changed from imageUri to imageUris array
 //     };
 
 //     const success = await updateItem(id as string, updatedData);
@@ -119,10 +153,7 @@
 //   }
 
 //   return (
-
 //     <ScrollView style={styles.scrollContainer}>
-
-
 //       <View style={styles.container}>
 //         <Text style={styles.title}>Edit Item</Text>
 
@@ -140,15 +171,74 @@
 //           />
 //         </View>
 
-//         {/* Image Picker */}
+//         {/* Updated Image Section with Multiple Images */}
 //         <View style={styles.imageSection}>
-//           <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+//           <Text style={styles.label}>Images:</Text>
+          
+//           <TouchableOpacity 
+//             style={styles.imageButton} 
+//             onPress={() => setImageSourceModalVisible(true)}
+//           >
 //             <Text style={styles.buttonText}>
-//               {selectedImage ? 'Change Image' : 'Pick an Image'}
+//               {selectedImages.length > 0 ? 'Add More Images' : 'Add Images'}
 //             </Text>
 //           </TouchableOpacity>
-//           {selectedImage && (
-//             <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+
+//           {/* Image Source Selection Modal */}
+//           <Modal
+//             animationType="slide"
+//             transparent={true}
+//             visible={imageSourceModalVisible}
+//             onRequestClose={() => setImageSourceModalVisible(false)}
+//           >
+//             <View style={styles.modalContainer}>
+//               <View style={styles.modalContent}>
+//                 <Text style={styles.modalTitle}>Choose Image Source</Text>
+                
+//                 <TouchableOpacity 
+//                   style={styles.modalButton} 
+//                   onPress={pickImages}
+//                 >
+//                   <Text style={styles.modalButtonText}>Choose from Gallery</Text>
+//                 </TouchableOpacity>
+
+//                 <TouchableOpacity 
+//                   style={styles.modalButton} 
+//                   onPress={takePhoto}
+//                 >
+//                   <Text style={styles.modalButtonText}>Take Photo</Text>
+//                 </TouchableOpacity>
+
+//                 <TouchableOpacity 
+//                   style={styles.cancelButton}
+//                   onPress={() => setImageSourceModalVisible(false)}
+//                 >
+//                   <Text style={styles.cancelButtonText}>Cancel</Text>
+//                 </TouchableOpacity>
+//               </View>
+//             </View>
+//           </Modal>
+
+//           {/* Display Selected Images */}
+//           {selectedImages.length > 0 && (
+//             <View>
+//               <Text style={styles.imageCountText}>
+//                 {selectedImages.length} {selectedImages.length === 1 ? 'image' : 'images'} selected
+//               </Text>
+//               <ScrollView horizontal style={styles.multipleImageContainer}>
+//                 {selectedImages.map((imageUri, index) => (
+//                   <View key={index} style={styles.imagePreviewContainer}>
+//                     <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+//                     <TouchableOpacity 
+//                       style={styles.removeImageButton}
+//                       onPress={() => removeImage(index)}
+//                     >
+//                       <Text style={styles.removeImageText}>×</Text>
+//                     </TouchableOpacity>
+//                   </View>
+//                 ))}
+//               </ScrollView>
+//             </View>
 //           )}
 //         </View>
 
@@ -193,104 +283,190 @@
 //           </TouchableOpacity>
 //         </View>
 //       </View>
-//  </ScrollView>
-
+//     </ScrollView>
 //   );
 // }
 
 // const styles = StyleSheet.create({
-//   scrollContainer: { flex: 1, backgroundColor: '#f5f5f5' },
-//   container: { flex: 1, padding: 20, marginBottom:60 },
-//   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-//   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  
-//   // Input Styles
-//   inputContainer: { marginBottom: 20 },
-//   label: { fontSize: 16, fontWeight: 'bold', marginBottom: 8, color: '#333' },
+//   scrollContainer: {
+//     flex: 1,
+//     backgroundColor: '#f5f5f5',
+//   },
+//   container: {
+//     padding: 20,
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     marginBottom: 20,
+//     textAlign: 'center',
+//   },
+//   inputContainer: {
+//     marginBottom: 20,
+//   },
+//   label: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     marginBottom: 8,
+//     color: '#333',
+//   },
 //   textInput: {
-//     backgroundColor: 'white',
 //     borderWidth: 1,
 //     borderColor: '#ddd',
 //     borderRadius: 8,
 //     padding: 12,
 //     fontSize: 16,
+//     backgroundColor: 'white',
 //   },
 //   textArea: {
 //     minHeight: 100,
 //     textAlignVertical: 'top',
 //   },
 //   errorInput: {
-//     borderColor: 'red',
-//     borderWidth: 2,
+//     borderColor: '#ff4444',
 //   },
-  
-//   // Image Styles
-//   imageSection: { alignItems: 'center', marginBottom: 20 },
-//   imageButton: { 
-//     backgroundColor: '#6B46C1', 
-//     padding: 15, 
-//     borderRadius: 5, 
-//     marginBottom: 10 
+//   imageSection: {
+//     marginBottom: 20,
 //   },
-//   imagePreview: { 
-//     width: 200, 
-//     height: 200, 
-//     borderRadius: 10 
+//   imageButton: {
+//     backgroundColor: '#007AFF',
+//     padding: 15,
+//     borderRadius: 8,
+//     alignItems: 'center',
+//     marginBottom: 10,
 //   },
-  
-//   // Dropdown Styles
-//   dropdownContainer: { marginBottom: 20 },
-//   optionsContainer: { 
-//     flexDirection: 'row', 
-//     flexWrap: 'wrap', 
-//     gap: 10 
+//   multipleImageContainer: {
+//     flexDirection: 'row',
+//     marginTop: 10,
 //   },
-//   optionButton: { 
-//     paddingHorizontal: 16, 
-//     paddingVertical: 8, 
-//     backgroundColor: '#fff', 
-//     borderWidth: 1, 
-//     borderColor: '#ddd', 
-//     borderRadius: 8 
+//   imagePreviewContainer: {
+//     position: 'relative',
+//     marginRight: 10,
 //   },
-//   selectedOption: { 
-//     backgroundColor: '#007AFF', 
-//     borderColor: '#007AFF' 
+//   imagePreview: {
+//     width: 100,
+//     height: 100,
+//     borderRadius: 8,
 //   },
-//   optionText: { 
-//     color: '#333' 
+//   removeImageButton: {
+//     position: 'absolute',
+//     top: -5,
+//     right: -5,
+//     backgroundColor: '#ff4444',
+//     borderRadius: 10,
+//     width: 20,
+//     height: 20,
+//     alignItems: 'center',
+//     justifyContent: 'center',
 //   },
-//   selectedText: { 
-//     color: '#fff', 
-//     fontWeight: 'bold' 
+//   removeImageText: {
+//     color: 'white',
+//     fontWeight: 'bold',
+//     fontSize: 14,
 //   },
-  
-//   // Button Styles
-//   buttonRow: { 
-//     flexDirection: 'row', 
-//     justifyContent: 'space-between', 
-//     marginTop: 20 
+//   imageCountText: {
+//     fontSize: 12,
+//     color: '#666',
+//     marginTop: 5,
+//     textAlign: 'center',
 //   },
-//   actionButton: { 
-//     flex: 1, 
-//     padding: 16, 
-//     borderRadius: 8, 
-//     alignItems: 'center', 
-//     marginHorizontal: 5 
+//   dropdownContainer: {
+//     marginBottom: 20,
 //   },
-//   cancelButton: { 
-//     backgroundColor: '#6B7280' 
+//   optionsContainer: {
+//     flexDirection: 'row',
+//     flexWrap: 'wrap',
 //   },
-//   updateButton: { 
-//     backgroundColor: '#10B981' 
+//   optionButton: {
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//     borderRadius: 20,
+//     backgroundColor: '#f0f0f0',
+//     marginRight: 8,
+//     marginBottom: 8,
 //   },
-//   buttonText: { 
-//     color: '#fff', 
-//     fontSize: 16, 
-//     fontWeight: 'bold' 
+//   selectedOption: {
+//     backgroundColor: '#007AFF',
+//   },
+//   optionText: {
+//     color: '#333',
+//   },
+//   selectedText: {
+//     color: 'white',
+//     fontWeight: '600',
+//   },
+//   buttonRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginTop: 20,
+//   },
+//   actionButton: {
+//     flex: 1,
+//     padding: 15,
+//     borderRadius: 8,
+//     alignItems: 'center',
+//     marginHorizontal: 5,
+//   },
+//   cancelButton: {
+//     backgroundColor: '#6c757d',
+//   },
+//   updateButton: {
+//     backgroundColor: '#28a745',
+//   },
+//   buttonText: {
+//     color: 'white',
+//     fontWeight: 'bold',
+//     fontSize: 16,
+//   },
+//   // Modal Styles
+//   modalContainer: {
+//     flex: 1,
+//     justifyContent: 'flex-end',
+//     backgroundColor: 'rgba(0,0,0,0.5)',
+//   },
+//   modalContent: {
+//     backgroundColor: 'white',
+//     borderTopLeftRadius: 20,
+//     borderTopRightRadius: 20,
+//     padding: 20,
+//     paddingBottom: 30,
+//   },
+//   modalTitle: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 20,
+//   },
+//   modalButton: {
+//     padding: 16,
+//     borderRadius: 10,
+//     backgroundColor: '#f8f8f8',
+//     marginBottom: 10,
+//     alignItems: 'center',
+//   },
+//   modalButtonText: {
+//     fontSize: 16,
+//     color: '#007AFF',
+//     fontWeight: '600',
+//   },
+//   // cancelButton: {
+//   //   padding: 16,
+//   //   borderRadius: 10,
+//   //   backgroundColor: '#f8f8f8',
+//   //   alignItems: 'center',
+//   //   marginTop: 10,
+//   // },
+//   cancelButtonText: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     color: '#ff4444',
 //   },
 // });
-
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -397,7 +573,7 @@ export default function EditScreen() {
       part: selectedPart,
       description,
       price,
-      imageUris: selectedImages // Changed from imageUri to imageUris array
+      imageUris: selectedImages
     };
 
     const success = await updateItem(id as string, updatedData);
@@ -439,8 +615,8 @@ export default function EditScreen() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text>Loading item...</Text>
+        <ActivityIndicator size="large" color="#FFD700" />
+        <Text style={styles.loadingText}>Loading item...</Text>
       </View>
     );
   }
@@ -461,6 +637,7 @@ export default function EditScreen() {
             value={name}
             onChangeText={setName}
             placeholder="Enter item name"
+            placeholderTextColor="#CCCCCC"
           />
         </View>
 
@@ -503,10 +680,10 @@ export default function EditScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity 
-                  style={styles.cancelButton}
+                  style={styles.cancelModalButton}
                   onPress={() => setImageSourceModalVisible(false)}
                 >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
+                  <Text style={styles.cancelModalButtonText}>Cancel</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -548,6 +725,7 @@ export default function EditScreen() {
             value={description}
             onChangeText={setDescription}
             placeholder="Enter description"
+            placeholderTextColor="#CCCCCC"
             multiline
             numberOfLines={4}
           />
@@ -561,6 +739,7 @@ export default function EditScreen() {
             value={price}
             onChangeText={setPrice}
             placeholder="Enter price"
+            placeholderTextColor="#CCCCCC"
             keyboardType="numeric"
           />
         </View>
@@ -583,7 +762,7 @@ export default function EditScreen() {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#0A1931',
   },
   container: {
     padding: 20,
@@ -592,12 +771,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#0A1931',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#FFD700',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#FFD700',
   },
   inputContainer: {
     marginBottom: 20,
@@ -606,15 +792,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#333',
+    color: '#FFD700',
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#2d3e5d',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
-    backgroundColor: 'white',
+    backgroundColor: '#1a2b4d',
+    color: '#FFFFFF',
   },
   textArea: {
     minHeight: 100,
@@ -627,11 +814,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   imageButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#1a2b4d',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#2d3e5d',
   },
   multipleImageContainer: {
     flexDirection: 'row',
@@ -645,6 +834,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2d3e5d',
   },
   removeImageButton: {
     position: 'absolute',
@@ -664,7 +855,7 @@ const styles = StyleSheet.create({
   },
   imageCountText: {
     fontSize: 12,
-    color: '#666',
+    color: '#CCCCCC',
     marginTop: 5,
     textAlign: 'center',
   },
@@ -679,18 +870,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#1a2b4d',
     marginRight: 8,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#2d3e5d',
   },
   selectedOption: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FFD700',
+    borderColor: '#FFD700',
   },
   optionText: {
-    color: '#333',
+    color: '#CCCCCC',
   },
   selectedText: {
-    color: 'white',
+    color: '#0A1931',
     fontWeight: '600',
   },
   buttonRow: {
@@ -706,13 +900,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   cancelButton: {
-    backgroundColor: '#6c757d',
+    backgroundColor: '#1a2b4d',
+    borderWidth: 1,
+    borderColor: '#ff6b6b',
   },
   updateButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#1a2b4d',
+    borderWidth: 1,
+    borderColor: '#FFD700',
   },
   buttonText: {
-    color: 'white',
+    color: '#FFD700',
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -720,10 +918,10 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#1a2b4d',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
@@ -734,29 +932,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    color: '#FFD700',
   },
   modalButton: {
     padding: 16,
     borderRadius: 10,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#2d3e5d',
     marginBottom: 10,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3d4e6d',
   },
   modalButtonText: {
     fontSize: 16,
-    color: '#007AFF',
+    color: '#FFD700',
     fontWeight: '600',
   },
-  // cancelButton: {
-  //   padding: 16,
-  //   borderRadius: 10,
-  //   backgroundColor: '#f8f8f8',
-  //   alignItems: 'center',
-  //   marginTop: 10,
-  // },
-  cancelButtonText: {
+  cancelModalButton: {
+    padding: 16,
+    borderRadius: 10,
+    backgroundColor: '#2d3e5d',
+    alignItems: 'center',
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#ff6b6b',
+  },
+  cancelModalButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#ff4444',
+    color: '#ff6b6b',
   },
 });

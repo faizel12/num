@@ -6,7 +6,17 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack>
+      <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: '#0A1931', // Your dark blue
+              },
+              headerTintColor: '#FFD700', // Your gold color
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            }}
+      >
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />

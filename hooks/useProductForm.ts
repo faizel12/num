@@ -82,46 +82,10 @@ export const useProductForm = () => {
             console.error('Error loading saved items:', error);
         }
     };
-
-    // const pickImage = async () => {
-    //     let result = await ImagePicker.launchImageLibraryAsync({
-    //         mediaTypes: ['images','videos'],
-    //         allowsEditing: true,
-    //         aspect: [4, 3],
-    //         quality: 1,
-    //     });
-
-    //     if (!result.canceled) {
-    //         setSelectedImage(result.assets[0].uri);
-    //     }
-    // };
-
-    // // Save current form data to AsyncStorage
-    // const saveFormData = async () => {
-    //     try {
-    //         const formData = getFormData();
-    //         const newItem = {
-    //             ...formData,
-    //             id: Date.now().toString(), // Unique ID for each item
-    //             timestamp: new Date().toISOString()
-    //         };
-
-    //         const updatedItems = [...savedItems, newItem];
-    //         setSavedItems(updatedItems);
-
-    //         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
-
-    //         // Clear form after successful save
-    //         clearForm();
-
-    //         return true;
-    //     } catch (error) {
-    //         console.error('Error saving form data:', error);
-    //         return false;
-    //     }
-    // };
-
     const saveFormData = async () => {
+
+
+
         try {
             const formData = getFormData();
             const newItem = {
@@ -143,16 +107,6 @@ export const useProductForm = () => {
         }
     };
 
-    // // Clear only the form inputs (without affecting saved items)
-    // const clearForm = () => {
-    //     setSelectedSize(null);
-    //     setSelectedCondition(null);
-    //     setSelectedPart(null);
-    //     setDescription('');
-    //     setName('');
-    //     setPrice('');
-    //     setSelectedImage(null);
-    // };
 
         // Update clearForm to use the new clear function
         const clearForm = () => {
@@ -177,15 +131,6 @@ export const useProductForm = () => {
         }
     };
 
-    // const getFormData = () => ({
-    //     size: selectedSize,
-    //     condition: selectedCondition,
-    //     part: selectedPart,
-    //     description,
-    //     name,
-    //     price,
-    //     imageUri: selectedImage
-    // });
         // Update getFormData to return multiple images
         const getFormData = () => ({
             size: selectedSize,
@@ -227,7 +172,6 @@ export const useProductForm = () => {
         loadSavedItems, // <- Make sure it's included here for refreshing purpose
         deleteItem, // Add this line
         updateItem, // Add this
-
 
 
     };
