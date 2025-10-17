@@ -1,17 +1,154 @@
+// import { useLocalSearchParams, useRouter } from 'expo-router';
+// import React from 'react';
+// import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+// import { useProductForm } from '../../hooks/useProductForm';
+
+// export default function DetailScreen() {
+//     const { id } = useLocalSearchParams();
+//     const router = useRouter();
+//     const { savedItems } = useProductForm();
+
+//     // Find the item by ID
+//     const item = savedItems.find(i => i.id === id);
+
+//     if (!item) {
+//         return (
+//             <View style={styles.container}>
+//                 <Text style={styles.errorText}>Item not found</Text>
+//             </View>
+//         );
+//     }
+
+//     return (
+//         <ScrollView style={styles.container}>
+//             <Text style={styles.title}>Item Details</Text>
+
+//             {/* {item.imageUri && (
+//                 <Image source={{ uri: item.imageUri }} style={styles.image} />
+//             )} */}
+
+// {item.imageUris && item.imageUris.length > 0 && (
+//                                 <ScrollView horizontal 
+//                                 style={styles.savedImagesContainer}
+//                                 >
+//                                     {item.imageUris.map((imageUri:any, index:any) => (
+//                                         <Image 
+//                                             key={index} 
+//                                             source={{ uri: imageUri }} 
+//                                             style={styles.savedImage} 
+//                                         />
+//                                     ))}
+//                                 </ScrollView>
+//                             )}
+//             <View style={styles.detailCard}>
+
+//                 <View style={styles.detailRow}>
+//                     <Text style={styles.label}>NAME:</Text>
+//                     <Text style={styles.value}>{item.name || 'No Name'}</Text>
+//                 </View>
+//                 <View style={styles.detailRow}>
+//                     <Text style={styles.label}>Description:</Text>
+//                     <Text style={styles.value}>{item.description || 'No description'}</Text>
+//                 </View>
+
+//                 <View style={styles.detailRow}>
+//                     <Text style={styles.label}>Car Type:</Text>
+//                     <Text style={styles.value}>{item.size}</Text>
+//                 </View>
+
+//                 <View style={styles.detailRow}>
+//                     <Text style={styles.label}>Condition:</Text>
+//                     <Text style={styles.value}>{item.condition}</Text>
+//                 </View>
+
+//                 <View style={styles.detailRow}>
+//                     <Text style={styles.label}>Part Type:</Text>
+//                     <Text style={styles.value}>{item.part}</Text>
+//                 </View>
+
+//                 <View style={styles.detailRow}>
+//                     <Text style={styles.label}>Price:</Text>
+//                     <Text style={styles.price}>{item.price}</Text>
+//                 </View>
+//             </View>
+//         </ScrollView>
+//     );
+// }
+
+// const styles = StyleSheet.create({
+//     container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
+//     title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+//     errorText: { textAlign: 'center', fontSize: 18, marginTop: 50 },
+//     image: {
+//         width: '100%',
+//         height: 250,
+//         borderRadius: 12,
+//         marginBottom: 20,
+//         resizeMode: 'cover'
+//     },
+//     detailCard: {
+//         backgroundColor: 'white',
+//         padding: 20,
+//         borderRadius: 12,
+//         elevation: 3,
+//         shadowColor: '#000',
+//         shadowOffset: { width: 0, height: 2 },
+//         shadowOpacity: 0.1,
+//         shadowRadius: 4,
+//     },
+//     detailRow: {
+//         flexDirection: 'row',
+//         justifyContent: 'space-between',
+//         alignItems: 'flex-start',
+//         paddingVertical: 12,
+//         borderBottomWidth: 1,
+//         borderBottomColor: '#f0f0f0',
+//     },
+//     label: {
+//         fontSize: 16,
+//         fontWeight: '600',
+//         color: '#333',
+//         flex: 1
+//     },
+//     value: {
+//         fontSize: 16,
+//         color: '#666',
+//         flex: 1,
+//         textAlign: 'right'
+//     },
+//     price: {
+//         fontSize: 18,
+//         fontWeight: 'bold',
+//         color: '#2ecc71',
+//         flex: 1,
+//         textAlign: 'right'
+//     },
+//     savedImagesContainer: {
+//         flexDirection: 'row',
+//         marginBottom: 10,
+//     },
+//     savedImage: {
+//         width: 120,
+//         height: 120,
+//         borderRadius: 6,
+//         marginRight: 10,
+//     },
+// });
+
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Alert,
-  Dimensions,
-  Image,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    Alert,
+    Dimensions,
+    Image,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { useProductForm } from '../../hooks/useProductForm';
 
@@ -19,86 +156,21 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function DetailScreen() {
   const router = useRouter();
- 
-
-  // Find the item by ID
-  // const item = savedItems.find(savedItem => savedItem.id === id);
   const { id } = useLocalSearchParams();
-  const { savedItems, deleteItem, loadSavedItems } = useProductForm(); // Added loadSavedItems
+  const { savedItems, deleteItem } = useProductForm();
   const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [item, setItem] = useState<any>(null); // Added state for item
-  const [loading, setLoading] = useState(true); // Added loading state
 
-  console.log("Detail Screen - ID:", id, "Type:", typeof id);
-  console.log("Saved Items Count:", savedItems.length);
+  // Find the item by ID
+  const item = savedItems.find(savedItem => savedItem.id === id);
 
-  // Load items and find the specific item
-  useEffect(() => {
-    const findItem = async () => {
-      setLoading(true);
-      
-      // Ensure we have fresh data
-      await loadSavedItems();
-      
-      // Convert id to number for SQLite comparison
-      const itemId = parseInt(id as string, 10);
-      console.log("Looking for item with ID:", itemId);
-      
-      // Find the item - SQLite uses numeric IDs
-      const foundItem = savedItems.find(savedItem => savedItem.id === itemId);
-      console.log("Found item:", foundItem);
-      
-      setItem(foundItem);
-      setLoading(false);
-    };
-    if (id) {
-      findItem();
-    }
-  }, [id, savedItems.length]); 
-
-
-  // if (!item) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.errorText}>Item not found</Text>
-  //     </View>
-  //   );
-  // }
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text >Loading...</Text>
-      </View>
-    );
-  }
   if (!item) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>Item not found</Text>
-        <Text >ID: {id}</Text>
-        <Text >Total items: {savedItems.length}</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text >Go Back</Text>
-        </TouchableOpacity>
       </View>
     );
   }
-  // const handleDelete = async () => {
-  //   Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
-  //     { text: "Cancel", style: "cancel" },
-  //     {
-  //       text: "Delete",
-  //       style: "destructive",
-  //       onPress: async () => {
-  //         const success = await deleteItem(item.id);
-  //         if (success) {
-  //           router.back();
-  //         }
-  //       },
-  //     },
-  //   ]);
-  // };
 
   const handleDelete = async () => {
     Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
@@ -115,6 +187,7 @@ export default function DetailScreen() {
       },
     ]);
   };
+
   const handleImagePress = (imageUri: string, index: number) => {
     setFullScreenImage(imageUri);
     setCurrentImageIndex(index);
@@ -133,8 +206,6 @@ export default function DetailScreen() {
     setCurrentImageIndex(newIndex);
     setFullScreenImage(item.imageUris[newIndex]);
   };
-
-
 
   return (
     <ScrollView style={styles.container}>
@@ -388,8 +459,8 @@ const styles = StyleSheet.create({
   },
   imageNumberBadge: {
     position: 'absolute',
-    top: 2,
-    right: 2,
+    top: -5,
+    right: -5,
     backgroundColor: '#FFD700',
     borderRadius: 10,
     width: 20,

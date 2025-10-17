@@ -1,0 +1,178 @@
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+
+import { useImagePicker } from './useImagePicker'; // Adjust the import path as needed
+
+// Key for storing data in AsyncStorage
+const STORAGE_KEY = 'product_form_data';
+
+export const useProductForm = () => {
+    const [selectedSize, setSelectedSize] = useState<string | null>(null);
+    const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
+    const [selectedPart, setSelectedPart] = useState<string | null>(null);
+    const [description, setDescription] = useState('');
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+   
+   
+    // const [selectedImage, setSelectedImage] = useState<string | null>(null);
+   
+        // Replace the single image state and function with the new hook
+        const { selectedImages, pickImages, takePhoto, removeImage, clearAllImages } = useImagePicker();   
+    const [savedItems, setSavedItems] = useState<any[]>([]);
+
+    const carType = ['5L', '3L', 'Dolphin', 'Abadula','2L','Other'];
+    const conditionOptions = ['new', 'dubai'];
+    const partOptions = ['Motor',
+        'Leg',
+        'Body',
+        'sensors',
+        'Meri',
+        'Hose',
+        'Other'];
+
+
+    // Load saved items on component mount
+    useEffect(() => {
+        loadSavedItems();
+    }, []);
+    const deleteItem = async (itemId: string) => {
+        try {
+            const updatedItems = savedItems.filter(item => item.id !== itemId);
+            setSavedItems(updatedItems);
+            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
+            return true;
+        } catch (error) {
+            console.error('Error deleting item:', error);
+            return false;
+        }
+    };
+
+
+    useFocusEffect(
+        useCallback(() => {
+            loadSavedItems(); // Refresh when tab comes into focus
+        }, [])
+    );
+
+
+    const updateItem = async (itemId: string, updatedData: any) => {
+        try {
+          const updatedItems = savedItems.map(item => 
+            item.id === itemId ? { ...item, ...updatedData } : item
+          );
+          setSavedItems(updatedItems);
+          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
+          return true;
+        } catch (error) {
+          console.error('Error updating item:', error);
+          return false;
+        }
+      };
+
+    const loadSavedItems = async () => {
+        try {
+            const storedItems = await AsyncStorage.getItem(STORAGE_KEY);
+            if (storedItems) {
+                setSavedItems(JSON.parse(storedItems));
+            }
+        } catch (error) {
+            console.error('Error loading saved items:', error);
+        }
+    };
+    const saveFormData = async () => {
+
+
+
+        try {
+            const formData = getFormData();
+            const newItem = {
+                ...formData,
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                imageUris: selectedImages // Save array of URIs
+            };
+
+            const updatedItems = [...savedItems, newItem];
+            setSavedItems(updatedItems);
+
+            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems));
+            clearForm();
+            return true;
+        } catch (error) {
+            console.error('Error saving form data:', error);
+            return false;
+        }
+    };
+
+
+        // Update clearForm to use the new clear function
+        const clearForm = () => {
+            setSelectedSize(null);
+            setSelectedCondition(null);
+            setSelectedPart(null);
+            setDescription('');
+            setName('');
+            setPrice('');
+            clearAllImages(); // Clear the multiple images
+        };
+
+    // Clear all saved items from storage
+    const clearAllSavedItems = async () => {
+        try {
+            await AsyncStorage.removeItem(STORAGE_KEY);
+            setSavedItems([]);
+            return true;
+        } catch (error) {
+            console.error('Error clearing saved items:', error);
+            return false;
+        }
+    };
+
+        // Update getFormData to return multiple images
+        const getFormData = () => ({
+            size: selectedSize,
+            condition: selectedCondition,
+            part: selectedPart,
+            description,
+            name,
+            price,
+            imageUris: selectedImages // Change from imageUri to imageUris
+        });
+
+    return {
+        selectedSize,
+        setSelectedSize,
+        selectedCondition,
+        setSelectedCondition,
+        selectedPart,
+        setSelectedPart,
+        description,
+        setDescription,
+        name,
+        setName,
+        price,
+        setPrice,
+        // selectedImage,
+        // pickImage,
+        selectedImages,
+        pickImages,
+        takePhoto, // Make sure this is included
+        removeImage,
+        carType,
+        conditionOptions,
+        partOptions,
+        savedItems,
+        saveFormData,
+        clearForm,
+        clearAllSavedItems,
+        getFormData,
+        loadSavedItems, // <- Make sure it's included here for refreshing purpose
+        deleteItem, // Add this line
+        updateItem, // Add this
+
+
+    };
+};

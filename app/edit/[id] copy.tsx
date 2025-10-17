@@ -1,4 +1,3 @@
-
 // import * as ImagePicker from 'expo-image-picker';
 // import { useLocalSearchParams, useRouter } from 'expo-router';
 // import React, { useEffect, useState } from 'react';
@@ -105,7 +104,7 @@
 //       part: selectedPart,
 //       description,
 //       price,
-//       imageUris: selectedImages
+//       imageUris: selectedImages // Changed from imageUri to imageUris array
 //     };
 
 //     const success = await updateItem(id as string, updatedData);
@@ -147,8 +146,8 @@
 //   if (loading) {
 //     return (
 //       <View style={styles.loadingContainer}>
-//         <ActivityIndicator size="large" color="#FFD700" />
-//         <Text style={styles.loadingText}>Loading item...</Text>
+//         <ActivityIndicator size="large" color="#007AFF" />
+//         <Text>Loading item...</Text>
 //       </View>
 //     );
 //   }
@@ -169,7 +168,6 @@
 //             value={name}
 //             onChangeText={setName}
 //             placeholder="Enter item name"
-//             placeholderTextColor="#CCCCCC"
 //           />
 //         </View>
 
@@ -212,10 +210,10 @@
 //                 </TouchableOpacity>
 
 //                 <TouchableOpacity 
-//                   style={styles.cancelModalButton}
+//                   style={styles.cancelButton}
 //                   onPress={() => setImageSourceModalVisible(false)}
 //                 >
-//                   <Text style={styles.cancelModalButtonText}>Cancel</Text>
+//                   <Text style={styles.cancelButtonText}>Cancel</Text>
 //                 </TouchableOpacity>
 //               </View>
 //             </View>
@@ -257,7 +255,6 @@
 //             value={description}
 //             onChangeText={setDescription}
 //             placeholder="Enter description"
-//             placeholderTextColor="#CCCCCC"
 //             multiline
 //             numberOfLines={4}
 //           />
@@ -271,7 +268,6 @@
 //             value={price}
 //             onChangeText={setPrice}
 //             placeholder="Enter price"
-//             placeholderTextColor="#CCCCCC"
 //             keyboardType="numeric"
 //           />
 //         </View>
@@ -291,6 +287,186 @@
 //   );
 // }
 
+// const styles = StyleSheet.create({
+//   scrollContainer: {
+//     flex: 1,
+//     backgroundColor: '#f5f5f5',
+//   },
+//   container: {
+//     padding: 20,
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: 'bold',
+//     marginBottom: 20,
+//     textAlign: 'center',
+//   },
+//   inputContainer: {
+//     marginBottom: 20,
+//   },
+//   label: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     marginBottom: 8,
+//     color: '#333',
+//   },
+//   textInput: {
+//     borderWidth: 1,
+//     borderColor: '#ddd',
+//     borderRadius: 8,
+//     padding: 12,
+//     fontSize: 16,
+//     backgroundColor: 'white',
+//   },
+//   textArea: {
+//     minHeight: 100,
+//     textAlignVertical: 'top',
+//   },
+//   errorInput: {
+//     borderColor: '#ff4444',
+//   },
+//   imageSection: {
+//     marginBottom: 20,
+//   },
+//   imageButton: {
+//     backgroundColor: '#007AFF',
+//     padding: 15,
+//     borderRadius: 8,
+//     alignItems: 'center',
+//     marginBottom: 10,
+//   },
+//   multipleImageContainer: {
+//     flexDirection: 'row',
+//     marginTop: 10,
+//   },
+//   imagePreviewContainer: {
+//     position: 'relative',
+//     marginRight: 10,
+//   },
+//   imagePreview: {
+//     width: 100,
+//     height: 100,
+//     borderRadius: 8,
+//   },
+//   removeImageButton: {
+//     position: 'absolute',
+//     top: -5,
+//     right: -5,
+//     backgroundColor: '#ff4444',
+//     borderRadius: 10,
+//     width: 20,
+//     height: 20,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   removeImageText: {
+//     color: 'white',
+//     fontWeight: 'bold',
+//     fontSize: 14,
+//   },
+//   imageCountText: {
+//     fontSize: 12,
+//     color: '#666',
+//     marginTop: 5,
+//     textAlign: 'center',
+//   },
+//   dropdownContainer: {
+//     marginBottom: 20,
+//   },
+//   optionsContainer: {
+//     flexDirection: 'row',
+//     flexWrap: 'wrap',
+//   },
+//   optionButton: {
+//     paddingHorizontal: 16,
+//     paddingVertical: 8,
+//     borderRadius: 20,
+//     backgroundColor: '#f0f0f0',
+//     marginRight: 8,
+//     marginBottom: 8,
+//   },
+//   selectedOption: {
+//     backgroundColor: '#007AFF',
+//   },
+//   optionText: {
+//     color: '#333',
+//   },
+//   selectedText: {
+//     color: 'white',
+//     fontWeight: '600',
+//   },
+//   buttonRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginTop: 20,
+//   },
+//   actionButton: {
+//     flex: 1,
+//     padding: 15,
+//     borderRadius: 8,
+//     alignItems: 'center',
+//     marginHorizontal: 5,
+//   },
+//   cancelButton: {
+//     backgroundColor: '#6c757d',
+//   },
+//   updateButton: {
+//     backgroundColor: '#28a745',
+//   },
+//   buttonText: {
+//     color: 'white',
+//     fontWeight: 'bold',
+//     fontSize: 16,
+//   },
+//   // Modal Styles
+//   modalContainer: {
+//     flex: 1,
+//     justifyContent: 'flex-end',
+//     backgroundColor: 'rgba(0,0,0,0.5)',
+//   },
+//   modalContent: {
+//     backgroundColor: 'white',
+//     borderTopLeftRadius: 20,
+//     borderTopRightRadius: 20,
+//     padding: 20,
+//     paddingBottom: 30,
+//   },
+//   modalTitle: {
+//     fontSize: 18,
+//     fontWeight: 'bold',
+//     textAlign: 'center',
+//     marginBottom: 20,
+//   },
+//   modalButton: {
+//     padding: 16,
+//     borderRadius: 10,
+//     backgroundColor: '#f8f8f8',
+//     marginBottom: 10,
+//     alignItems: 'center',
+//   },
+//   modalButtonText: {
+//     fontSize: 16,
+//     color: '#007AFF',
+//     fontWeight: '600',
+//   },
+//   // cancelButton: {
+//   //   padding: 16,
+//   //   borderRadius: 10,
+//   //   backgroundColor: '#f8f8f8',
+//   //   alignItems: 'center',
+//   //   marginTop: 10,
+//   // },
+//   cancelButtonText: {
+//     fontSize: 16,
+//     fontWeight: '600',
+//     color: '#ff4444',
+//   },
+// });
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -311,7 +487,7 @@ import { useProductForm } from '../../hooks/useProductForm';
 export default function EditScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { savedItems, updateItem, carType, conditionOptions, partOptions, loadSavedItems } = useProductForm(); // Added loadSavedItems
+  const { savedItems, updateItem, carType, conditionOptions, partOptions } = useProductForm();
   
   const [name, setName] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
@@ -322,60 +498,33 @@ export default function EditScreen() {
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
-  const [item, setItem] = useState<any>(null); // Added item state
 
   // Load item data when component mounts
   useEffect(() => {
-    const loadItemData = async () => {
-      setLoading(true);
+    const item = savedItems.find(i => i.id === id);
+    if (item) {
+      setName(item.name || '');
+      setSelectedSize(item.size || '');
+      setSelectedCondition(item.condition || '');
+      setSelectedPart(item.part || '');
+      setDescription(item.description || '');
+      setPrice(item.price || '');
       
-      // Ensure we have fresh data from database
-      await loadSavedItems();
-      
-      // Convert id to number for SQLite comparison
-      const numericId = parseInt(id as string, 10);
-      console.log("Edit Screen - Looking for item ID:", numericId);
-      
-      // Find the item - SQLite uses numeric IDs
-      const foundItem = savedItems.find(i => i.id === numericId);
-      console.log("Edit Screen - Found item:", foundItem);
-      
-      if (foundItem) {
-        setItem(foundItem);
-        setName(foundItem.name || '');
-        setSelectedSize(foundItem.size || '');
-        setSelectedCondition(foundItem.condition || '');
-        setSelectedPart(foundItem.part || '');
-        setDescription(foundItem.description || '');
-        setPrice(foundItem.price || '');
-        
-        // Handle both old (imageUri) and new (imageUris) data formats
-        if (foundItem.imageUris) {
-          setSelectedImages(foundItem.imageUris);
-        } else if (foundItem.imageUri) {
-          setSelectedImages([foundItem.imageUri]);
-        } else {
-          setSelectedImages([]);
-        }
+      // Handle both old (imageUri) and new (imageUris) data formats
+      if (item.imageUris) {
+        setSelectedImages(item.imageUris);
+      } else if (item.imageUri) {
+        setSelectedImages([item.imageUri]);
+      } else {
+        setSelectedImages([]);
       }
-      setLoading(false);
-    };
-
-    if (id) {
-      loadItemData();
     }
-  }, [id, savedItems.length]); // Added dependency
+    setLoading(false);
+  }, [id, savedItems]);
 
   const pickImages = async () => {
     setImageSourceModalVisible(false);
     
-    // Request permissions
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsMultipleSelection: true,
@@ -394,13 +543,6 @@ export default function EditScreen() {
   const takePhoto = async () => {
     setImageSourceModalVisible(false);
     
-    // Request permissions
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Sorry, we need camera permissions to make this work!');
-      return;
-    }
-
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
@@ -424,9 +566,6 @@ export default function EditScreen() {
       return;
     }
 
-    // Convert id to number for SQLite
-    const numericId = parseInt(id as string, 10);
-
     const updatedData = {
       name,
       size: selectedSize,
@@ -437,7 +576,7 @@ export default function EditScreen() {
       imageUris: selectedImages
     };
 
-    const success = await updateItem(numericId.toString(), updatedData); // Keep as string for the function
+    const success = await updateItem(id as string, updatedData);
     if (success) {
       Alert.alert('Success', 'Item updated successfully!');
       router.back();
@@ -482,27 +621,10 @@ export default function EditScreen() {
     );
   }
 
-  if (!item) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Item not found</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>Go Back</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>Edit Item</Text>
-
-        {/* Debug Info - Remove this after testing */}
-        {/* <View style={styles.debugInfo}>
-          <Text style={styles.debugText}>Editing Item ID: {id}</Text>
-          <Text style={styles.debugText}>Found: {item ? 'Yes' : 'No'}</Text>
-        </View> */}
 
         {/* Name Input */}
         <View style={styles.inputContainer}>
@@ -636,34 +758,8 @@ export default function EditScreen() {
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
-  debugInfo: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  debugText: {
-    fontSize: 12,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 18,
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  backButton: {
-    backgroundColor: '#FFD700',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    color: '#1a1a1a',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
   scrollContainer: {
     flex: 1,
     backgroundColor: '#0A1931',
@@ -743,21 +839,19 @@ const styles = StyleSheet.create({
   },
   removeImageButton: {
     position: 'absolute',
-    top: 1,
-    right: 1,
+    top: -5,
+    right: -5,
     backgroundColor: '#ff4444',
     borderRadius: 10,
     width: 20,
     height: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    
   },
   removeImageText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
-    // marginBottom:2
   },
   imageCountText: {
     fontSize: 12,
