@@ -14,10 +14,12 @@ import {
   View
 } from 'react-native';
 import { useProductForm } from '../../hooks/useProductForm';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function DetailScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
  
 
@@ -147,7 +149,7 @@ export default function DetailScreen() {
           <FontAwesome name="arrow-left" size={20} color="#FFD700" />
         </TouchableOpacity>
         
-        <Text style={styles.headerTitle}>Item Details</Text>
+        <Text style={styles.headerTitle}>{t('details')}</Text>
         
         <View style={styles.headerActions}>
           <TouchableOpacity
@@ -169,7 +171,7 @@ export default function DetailScreen() {
       {/* Images Gallery */}
       {item.imageUris && item.imageUris.length > 0 && (
         <View style={styles.imagesSection}>
-          <Text style={styles.sectionTitle}>Images ({item.imageUris.length})</Text>
+          <Text style={styles.sectionTitle}>{t('images')} ({item.imageUris.length})</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imagesScroll}>
             {item.imageUris.map((imageUri: string, index: number) => (
               <TouchableOpacity 
@@ -208,20 +210,20 @@ export default function DetailScreen() {
         <View style={styles.infoGrid}>
           <View style={styles.infoItem}>
             <FontAwesome name="car" size={16} color="#FFD700" />
-            <Text style={styles.infoLabel}>Car Type:</Text>
+            <Text style={styles.infoLabel}>{t('carType')}:</Text>
             <Text style={styles.infoValue}>{item.size || 'Not specified'}</Text>
           </View>
           
           <View style={styles.infoItem}>
             <FontAwesome name="puzzle-piece" size={16} color="#FFD700" />
-            <Text style={styles.infoLabel}>Part:</Text>
+            <Text style={styles.infoLabel}>{t('part')}:</Text>
             <Text style={styles.infoValue}>{item.part || 'Not specified'}</Text>
           </View>
           
           {item.price && (
             <View style={styles.infoItem}>
               <FontAwesome name="dollar" size={16} color="#FFD700" />
-              <Text style={styles.infoLabel}>Price:</Text>
+              <Text style={styles.infoLabel}> {t('price')}:</Text>
               <Text style={[styles.infoValue, styles.priceText]}>${item.price}</Text>
             </View>
           )}
@@ -230,7 +232,7 @@ export default function DetailScreen() {
         {/* Description */}
         {item.description && (
           <View style={styles.descriptionSection}>
-            <Text style={styles.sectionTitle}>Description</Text>
+            <Text style={styles.sectionTitle}>{t('description')}</Text>
             <View style={styles.descriptionBox}>
               <Text style={styles.descriptionText}>{item.description}</Text>
             </View>
@@ -238,7 +240,7 @@ export default function DetailScreen() {
         )}
 
         {/* Additional Details */}
-        <View style={styles.detailsSection}>
+        {/* <View style={styles.detailsSection}>
           <Text style={styles.sectionTitle}>Additional Details</Text>
           <View style={styles.detailsGrid}>
             <View style={styles.detailItem}>
@@ -256,7 +258,7 @@ export default function DetailScreen() {
               </View>
             )}
           </View>
-        </View>
+        </View> */}
       </View>
 
       {/* Full Screen Image Modal */}
@@ -455,7 +457,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: 8,
     marginRight: 8,
-    width: 80,
+    width: 100,
   },
   infoValue: {
     fontSize: 16,

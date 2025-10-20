@@ -1,296 +1,4 @@
 
-// import * as ImagePicker from 'expo-image-picker';
-// import { useLocalSearchParams, useRouter } from 'expo-router';
-// import React, { useEffect, useState } from 'react';
-// import {
-//   ActivityIndicator,
-//   Alert,
-//   Image,
-//   Modal,
-//   ScrollView,
-//   StyleSheet,
-//   Text,
-//   TextInput,
-//   TouchableOpacity,
-//   View
-// } from 'react-native';
-// import { useProductForm } from '../../hooks/useProductForm';
-
-// export default function EditScreen() {
-//   const { id } = useLocalSearchParams();
-//   const router = useRouter();
-//   const { savedItems, updateItem, carType, conditionOptions, partOptions } = useProductForm();
-  
-//   const [name, setName] = useState('');
-//   const [selectedSize, setSelectedSize] = useState('');
-//   const [selectedCondition, setSelectedCondition] = useState('');
-//   const [selectedPart, setSelectedPart] = useState('');
-//   const [description, setDescription] = useState('');
-//   const [price, setPrice] = useState('');
-//   const [selectedImages, setSelectedImages] = useState<string[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
-
-//   // Load item data when component mounts
-//   useEffect(() => {
-//     const item = savedItems.find(i => i.id === id);
-//     if (item) {
-//       setName(item.name || '');
-//       setSelectedSize(item.size || '');
-//       setSelectedCondition(item.condition || '');
-//       setSelectedPart(item.part || '');
-//       setDescription(item.description || '');
-//       setPrice(item.price || '');
-      
-//       // Handle both old (imageUri) and new (imageUris) data formats
-//       if (item.imageUris) {
-//         setSelectedImages(item.imageUris);
-//       } else if (item.imageUri) {
-//         setSelectedImages([item.imageUri]);
-//       } else {
-//         setSelectedImages([]);
-//       }
-//     }
-//     setLoading(false);
-//   }, [id, savedItems]);
-
-//   const pickImages = async () => {
-//     setImageSourceModalVisible(false);
-    
-//     let result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes: ['images'],
-//       allowsMultipleSelection: true,
-//       selectionLimit: 0,
-//       orderedSelection: true,
-//       aspect: [4, 3],
-//       quality: 1,
-//     });
-
-//     if (!result.canceled) {
-//       const uris = result.assets.map(asset => asset.uri);
-//       setSelectedImages(prev => [...prev, ...uris]);
-//     }
-//   };
-
-//   const takePhoto = async () => {
-//     setImageSourceModalVisible(false);
-    
-//     let result = await ImagePicker.launchCameraAsync({
-//       mediaTypes: ['images'],
-//       allowsEditing: true,
-//       aspect: [4, 3],
-//       quality: 1,
-//     });
-
-//     if (!result.canceled) {
-//       const newImageUri = result.assets[0].uri;
-//       setSelectedImages(prev => [...prev, newImageUri]);
-//     }
-//   };
-
-//   const removeImage = (index: number) => {
-//     setSelectedImages(prev => prev.filter((_, i) => i !== index));
-//   };
-
-//   const handleUpdate = async () => {
-//     if (!name.trim()) {
-//       Alert.alert('Error', 'Name is required');
-//       return;
-//     }
-
-//     const updatedData = {
-//       name,
-//       size: selectedSize,
-//       condition: selectedCondition,
-//       part: selectedPart,
-//       description,
-//       price,
-//       imageUris: selectedImages
-//     };
-
-//     const success = await updateItem(id as string, updatedData);
-//     if (success) {
-//       Alert.alert('Success', 'Item updated successfully!');
-//       router.back();
-//     } else {
-//       Alert.alert('Error', 'Failed to update item');
-//     }
-//   };
-
-//   const renderDropdown = (
-//     selectedValue: string,
-//     onSelect: (value: string) => void,
-//     options: string[],
-//     placeholder: string
-//   ) => (
-//     <View style={styles.dropdownContainer}>
-//       <Text style={styles.label}>{placeholder}:</Text>
-//       <View style={styles.optionsContainer}>
-//         {options.map((option) => (
-//           <TouchableOpacity
-//             key={option}
-//             style={[
-//               styles.optionButton,
-//               selectedValue === option && styles.selectedOption
-//             ]}
-//             onPress={() => onSelect(option)}
-//           >
-//             <Text style={selectedValue === option ? styles.selectedText : styles.optionText}>
-//               {option}
-//             </Text>
-//           </TouchableOpacity>
-//         ))}
-//       </View>
-//     </View>
-//   );
-
-//   if (loading) {
-//     return (
-//       <View style={styles.loadingContainer}>
-//         <ActivityIndicator size="large" color="#FFD700" />
-//         <Text style={styles.loadingText}>Loading item...</Text>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <ScrollView style={styles.scrollContainer}>
-//       <View style={styles.container}>
-//         <Text style={styles.title}>Edit Item</Text>
-
-//         {/* Name Input */}
-//         <View style={styles.inputContainer}>
-//           <Text style={styles.label}>Item Name *</Text>
-//           <TextInput
-//             style={[
-//               styles.textInput,
-//               !name.trim() && styles.errorInput
-//             ]}
-//             value={name}
-//             onChangeText={setName}
-//             placeholder="Enter item name"
-//             placeholderTextColor="#CCCCCC"
-//           />
-//         </View>
-
-//         {/* Updated Image Section with Multiple Images */}
-//         <View style={styles.imageSection}>
-//           <Text style={styles.label}>Images:</Text>
-          
-//           <TouchableOpacity 
-//             style={styles.imageButton} 
-//             onPress={() => setImageSourceModalVisible(true)}
-//           >
-//             <Text style={styles.buttonText}>
-//               {selectedImages.length > 0 ? 'Add More Images' : 'Add Images'}
-//             </Text>
-//           </TouchableOpacity>
-
-//           {/* Image Source Selection Modal */}
-//           <Modal
-//             animationType="slide"
-//             transparent={true}
-//             visible={imageSourceModalVisible}
-//             onRequestClose={() => setImageSourceModalVisible(false)}
-//           >
-//             <View style={styles.modalContainer}>
-//               <View style={styles.modalContent}>
-//                 <Text style={styles.modalTitle}>Choose Image Source</Text>
-                
-//                 <TouchableOpacity 
-//                   style={styles.modalButton} 
-//                   onPress={pickImages}
-//                 >
-//                   <Text style={styles.modalButtonText}>Choose from Gallery</Text>
-//                 </TouchableOpacity>
-
-//                 <TouchableOpacity 
-//                   style={styles.modalButton} 
-//                   onPress={takePhoto}
-//                 >
-//                   <Text style={styles.modalButtonText}>Take Photo</Text>
-//                 </TouchableOpacity>
-
-//                 <TouchableOpacity 
-//                   style={styles.cancelModalButton}
-//                   onPress={() => setImageSourceModalVisible(false)}
-//                 >
-//                   <Text style={styles.cancelModalButtonText}>Cancel</Text>
-//                 </TouchableOpacity>
-//               </View>
-//             </View>
-//           </Modal>
-
-//           {/* Display Selected Images */}
-//           {selectedImages.length > 0 && (
-//             <View>
-//               <Text style={styles.imageCountText}>
-//                 {selectedImages.length} {selectedImages.length === 1 ? 'image' : 'images'} selected
-//               </Text>
-//               <ScrollView horizontal style={styles.multipleImageContainer}>
-//                 {selectedImages.map((imageUri, index) => (
-//                   <View key={index} style={styles.imagePreviewContainer}>
-//                     <Image source={{ uri: imageUri }} style={styles.imagePreview} />
-//                     <TouchableOpacity 
-//                       style={styles.removeImageButton}
-//                       onPress={() => removeImage(index)}
-//                     >
-//                       <Text style={styles.removeImageText}>×</Text>
-//                     </TouchableOpacity>
-//                   </View>
-//                 ))}
-//               </ScrollView>
-//             </View>
-//           )}
-//         </View>
-
-//         {/* Dropdowns */}
-//         {renderDropdown(selectedSize, setSelectedSize, carType, 'Select Car')}
-//         {renderDropdown(selectedCondition, setSelectedCondition, conditionOptions, 'Select Condition')}
-//         {renderDropdown(selectedPart, setSelectedPart, partOptions, 'Select Part')}
-
-//         {/* Description Input */}
-//         <View style={styles.inputContainer}>
-//           <Text style={styles.label}>Description:</Text>
-//           <TextInput
-//             style={[styles.textInput, styles.textArea]}
-//             value={description}
-//             onChangeText={setDescription}
-//             placeholder="Enter description"
-//             placeholderTextColor="#CCCCCC"
-//             multiline
-//             numberOfLines={4}
-//           />
-//         </View>
-
-//         {/* Price Input */}
-//         <View style={styles.inputContainer}>
-//           <Text style={styles.label}>Price:</Text>
-//           <TextInput
-//             style={styles.textInput}
-//             value={price}
-//             onChangeText={setPrice}
-//             placeholder="Enter price"
-//             placeholderTextColor="#CCCCCC"
-//             keyboardType="numeric"
-//           />
-//         </View>
-
-//         {/* Action Buttons */}
-//         <View style={styles.buttonRow}>
-//           <TouchableOpacity style={[styles.actionButton, styles.cancelButton]} onPress={() => router.back()}>
-//             <Text style={styles.buttonText}>Cancel</Text>
-//           </TouchableOpacity>
-          
-//           <TouchableOpacity style={[styles.actionButton, styles.updateButton]} onPress={handleUpdate}>
-//             <Text style={styles.buttonText}>Update Item</Text>
-//           </TouchableOpacity>
-//         </View>
-//       </View>
-//     </ScrollView>
-//   );
-// }
-
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -307,8 +15,9 @@ import {
   View
 } from 'react-native';
 import { useProductForm } from '../../hooks/useProductForm';
-
+import { useTranslation } from '../../hooks/useTranslation';
 export default function EditScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { savedItems, updateItem, carType, conditionOptions, partOptions, loadSavedItems } = useProductForm(); // Added loadSavedItems
@@ -485,7 +194,7 @@ export default function EditScreen() {
   if (!item) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>Item not found</Text>
+        <Text style={styles.errorText}>{t('itemNotFound')}</Text>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Text style={styles.backButtonText}>Go Back</Text>
         </TouchableOpacity>
@@ -496,7 +205,7 @@ export default function EditScreen() {
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>Edit Item</Text>
+        <Text style={styles.title}>{t('edit')}</Text>
 
         {/* Debug Info - Remove this after testing */}
         {/* <View style={styles.debugInfo}>
@@ -506,7 +215,7 @@ export default function EditScreen() {
 
         {/* Name Input */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Item Name *</Text>
+          <Text style={styles.label}>{t('name')} *</Text>
           <TextInput
             style={[
               styles.textInput,
@@ -521,7 +230,7 @@ export default function EditScreen() {
 
         {/* Updated Image Section with Multiple Images */}
         <View style={styles.imageSection}>
-          <Text style={styles.label}>Images:</Text>
+          <Text style={styles.label}>{t('images')}:</Text>
           
           <TouchableOpacity 
             style={styles.imageButton} 
@@ -541,27 +250,27 @@ export default function EditScreen() {
           >
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Choose Image Source</Text>
+                <Text style={styles.modalTitle}>{t('checkImageStorage')}</Text>
                 
                 <TouchableOpacity 
                   style={styles.modalButton} 
                   onPress={pickImages}
                 >
-                  <Text style={styles.modalButtonText}>Choose from Gallery</Text>
+                  <Text style={styles.modalButtonText}>{t('chooseFromGallery')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
                   style={styles.modalButton} 
                   onPress={takePhoto}
                 >
-                  <Text style={styles.modalButtonText}>Take Photo</Text>
+                  <Text style={styles.modalButtonText}>{t('takePhoto')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
                   style={styles.cancelModalButton}
                   onPress={() => setImageSourceModalVisible(false)}
                 >
-                  <Text style={styles.cancelModalButtonText}>Cancel</Text>
+                  <Text style={styles.cancelModalButtonText}>{t('cancel')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -591,13 +300,13 @@ export default function EditScreen() {
         </View>
 
         {/* Dropdowns */}
-        {renderDropdown(selectedSize, setSelectedSize, carType, 'Select Car')}
-        {renderDropdown(selectedCondition, setSelectedCondition, conditionOptions, 'Select Condition')}
-        {renderDropdown(selectedPart, setSelectedPart, partOptions, 'Select Part')}
+        {renderDropdown(selectedSize, setSelectedSize, carType, t('selectCarType'))}
+        {renderDropdown(selectedCondition, setSelectedCondition, conditionOptions, t('selectCondition'))}
+        {renderDropdown(selectedPart, setSelectedPart, partOptions, t('selectPart'))}
 
         {/* Description Input */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Description:</Text>
+          <Text style={styles.label}>{t('description')}:</Text>
           <TextInput
             style={[styles.textInput, styles.textArea]}
             value={description}
@@ -611,7 +320,7 @@ export default function EditScreen() {
 
         {/* Price Input */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Price:</Text>
+          <Text style={styles.label}>{t('price')}:</Text>
           <TextInput
             style={styles.textInput}
             value={price}
@@ -625,11 +334,11 @@ export default function EditScreen() {
         {/* Action Buttons */}
         <View style={styles.buttonRow}>
           <TouchableOpacity style={[styles.actionButton, styles.cancelButton]} onPress={() => router.back()}>
-            <Text style={styles.buttonText}>Cancel</Text>
+            <Text style={styles.buttonText}>{t('cancel')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={[styles.actionButton, styles.updateButton]} onPress={handleUpdate}>
-            <Text style={styles.buttonText}>Update Item</Text>
+            <Text style={styles.buttonText}>{t('update')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -796,7 +505,8 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    marginBlock: 30,
+
   },
   actionButton: {
     flex: 1,

@@ -1,499 +1,5 @@
 
-// import React, { useState } from 'react';
-// import {
-//     Alert,
-//     Image,
-//     Modal,
-//     ScrollView,
-//     StyleSheet,
-//     Text,
-//     TextInput,
-//     TouchableOpacity,
-//     View
-// } from 'react-native';
-// import { useProductForm } from '../hooks/useProductForm';
-
-// export default function ProductForm() {
-//     const {
-//         selectedSize,
-//         selectedCondition,
-//         selectedPart,
-//         setSelectedSize,
-//         setSelectedCondition,
-//         setSelectedPart,
-//         description,
-//         setDescription,
-//         name,
-//         setName,
-//         price,
-//         setPrice,
-//         selectedImages,
-//         pickImages,
-//         takePhoto,
-//         removeImage,
-//         carType,
-//         conditionOptions,
-//         partOptions,
-//         savedItems,
-//         saveFormData,
-//         clearForm,
-//         clearAllSavedItems
-//     } = useProductForm();
-
-//     const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
-
-//     const handleSave = async () => {
-//         if (!name.trim()) {
-//             Alert.alert('Error', 'Name is required');
-//             return false;
-//         }
-//         const success = await saveFormData();
-//         if (success) {
-//             Alert.alert('Success', 'Data saved successfully! Form cleared for next entry.');
-//         } else {
-//             Alert.alert('Error', 'Failed to save data. Please try again.');
-//         }
-//     };
-
-//     const handleClearAll = async () => {
-//         Alert.alert(
-//             'Clear All Data',
-//             'Are you sure you want to delete all saved items?',
-//             [
-//                 { text: 'Cancel', style: 'cancel' },
-//                 {
-//                     text: 'Clear All',
-//                     style: 'destructive',
-//                     onPress: async () => {
-//                         await clearAllSavedItems();
-//                         Alert.alert('Success', 'All saved items have been cleared.');
-//                     }
-//                 }
-//             ]
-//         );
-//     };
-
-//     const renderDropdown = (
-//         selectedValue: string | null,
-//         onSelect: (value: string) => void,
-//         options: string[],
-//         placeholder: string
-//     ) => (
-//         <View style={styles.dropdownContainer}>
-//             <Text style={styles.label}>{placeholder}:</Text>
-//             <View style={styles.optionsContainer}>
-//                 {options.map((option) => (
-//                     <TouchableOpacity
-//                         key={option}
-//                         style={[
-//                             styles.optionButton,
-//                             selectedValue === option && styles.selectedOption
-//                         ]}
-//                         onPress={() => onSelect(option)}
-//                     >
-//                         <Text style={selectedValue === option ? styles.selectedText : styles.optionText}>
-//                             {option}
-//                         </Text>
-//                     </TouchableOpacity>
-//                 ))}
-//             </View>
-//         </View>
-//     );
-
-//     return (
-//         <ScrollView style={styles.scrollContainer}>
-//             <View style={styles.container}>
-//                 {/* Current Form Inputs */}
-//                 <Text style={styles.sectionTitle}>Add New Item</Text>
-
-//                 <View style={styles.inputContainer}>
-//                     <Text style={styles.label}>Name:</Text>
-//                     <TextInput
-//                         style={[
-//                             styles.textInput,
-//                             !name.trim() && styles.errorInput
-//                         ]}
-//                         value={name}
-//                         onChangeText={setName}
-//                         placeholder="Item Name *"
-//                     />
-//                 </View>
-//                 <View style={styles.inputContainer}>
-//                     <Text style={styles.label}>Description:</Text>
-//                     <TextInput
-//                         style={styles.textInput}
-//                         value={description}
-//                         onChangeText={setDescription}
-//                         placeholder="Enter description"
-//                         multiline
-//                     />
-//                 </View>
-//                 {/* Image Section with Multiple Images and Camera */}
-//                 <View style={styles.imageSection}>
-//                     <Text style={styles.label}>Images:</Text>
-                    
-//                     {/* Main Add Images Button */}
-//                     <TouchableOpacity 
-//                         style={styles.imageButton} 
-//                         onPress={() => setImageSourceModalVisible(true)}
-//                     >
-//                         <Text style={styles.buttonText}>Add Images</Text>
-//                     </TouchableOpacity>
-                    
-//                     {/* Image Source Selection Modal */}
-//                     <Modal
-//                         animationType="slide"
-//                         transparent={true}
-//                         visible={imageSourceModalVisible}
-//                         onRequestClose={() => setImageSourceModalVisible(false)}
-//                     >
-//                         <View style={styles.modalContainer}>
-//                             <View style={styles.modalContent}>
-//                                 <Text style={styles.modalTitle}>Choose Image Source</Text>
-                                
-//                                 <TouchableOpacity 
-//                                     style={styles.modalButton} 
-//                                     onPress={() => {
-//                                         setImageSourceModalVisible(false);
-//                                         pickImages();
-//                                     }}
-//                                 >
-//                                     <Text style={styles.modalButtonText}>Choose from Gallery</Text>
-//                                 </TouchableOpacity>
-
-//                                 <TouchableOpacity 
-//                                     style={styles.modalButton} 
-//                                     onPress={() => {
-//                                         setImageSourceModalVisible(false);
-//                                         takePhoto();
-//                                     }}
-//                                 >
-//                                     <Text style={styles.modalButtonText}>Take Photo</Text>
-//                                 </TouchableOpacity>
-
-//                                 <TouchableOpacity 
-//                                     style={styles.cancelButton}
-//                                     onPress={() => setImageSourceModalVisible(false)}
-//                                 >
-//                                     <Text style={styles.cancelButtonText}>Cancel</Text>
-//                                 </TouchableOpacity>
-//                             </View>
-//                         </View>
-//                     </Modal>
-                    
-//                     {/* Display Selected Images */}
-//                     {selectedImages.length > 0 && (
-//                         <View>
-//                             <Text style={styles.imageCountText}>
-//                                 {selectedImages.length} {selectedImages.length === 1 ? 'image' : 'images'} selected
-//                             </Text>
-//                             <ScrollView horizontal style={styles.multipleImageContainer}>
-//                                 {selectedImages.map((imageUri, index) => (
-//                                     <View key={index} style={styles.imagePreviewContainer}>
-//                                         <Image source={{ uri: imageUri }} style={styles.imagePreview} />
-//                                         <TouchableOpacity 
-//                                             style={styles.removeImageButton}
-//                                             onPress={() => removeImage(index)}
-//                                         >
-//                                             <Text style={styles.removeImageText}>×</Text>
-//                                         </TouchableOpacity>
-//                                     </View>
-//                                 ))}
-//                             </ScrollView>
-//                         </View>
-//                     )}
-//                 </View>
-
-//                 {renderDropdown(selectedSize, setSelectedSize, carType, 'Select Car Type')}
-//                 {renderDropdown(selectedCondition, setSelectedCondition, conditionOptions, 'Select Condition')}
-//                 {renderDropdown(selectedPart, setSelectedPart, partOptions, 'Select Part')}
-
-              
-
-//                 <View style={styles.inputContainer}>
-//                     <Text style={styles.label}>Price:</Text>
-//                     <TextInput
-//                         style={styles.textInput}
-//                         value={price}
-//                         onChangeText={setPrice}
-//                         placeholder="Enter price"
-//                         keyboardType="numeric"
-//                     />
-//                 </View>
-
-//                 {/* Action Buttons */}
-//                 <View style={styles.buttonRow}>
-//                     <TouchableOpacity style={[styles.actionButton, styles.saveButton]} onPress={handleSave}>
-//                         <Text style={styles.buttonText}>Save & Clear Form</Text>
-//                     </TouchableOpacity>
-
-//                     <TouchableOpacity style={[styles.actionButton, styles.clearButton]} onPress={clearForm}>
-//                         <Text style={styles.buttonText}>Clear Form Only</Text>
-//                     </TouchableOpacity>
-//                 </View>
-
-//                 {/* Saved Items Display */}
-//                 <View style={styles.savedSection}>
-//                     <View style={styles.savedHeader}>
-//                         <Text style={styles.sectionTitle}>Saved Items ({savedItems.length})</Text>
-//                         {savedItems.length > 0 && (
-//                             <TouchableOpacity onPress={handleClearAll}>
-//                                 <Text style={styles.clearAllText}>Clear All</Text>
-//                             </TouchableOpacity>
-//                         )}
-//                     </View>
-
-//                     {savedItems.map((item) => (
-//                         <View key={item.id} style={styles.savedItem}>
-//                             {/* Display multiple images for saved items */}
-//                             {item.imageUris && item.imageUris.length > 0 && (
-//                                 <ScrollView horizontal style={styles.savedImagesContainer}>
-//                                     {item.imageUris.map((imageUri:any, index:any) => (
-//                                         <Image 
-//                                             key={index} 
-//                                             source={{ uri: imageUri }} 
-//                                             style={styles.savedImage} 
-//                                         />
-//                                     ))}
-//                                 </ScrollView>
-//                             )}
-//                             <View style={styles.savedDetails}>
-//                                 <Text><Text style={styles.bold}>Name:</Text> {item.name}</Text>
-//                                 <Text><Text style={styles.bold}>Car Type:</Text> {item.size}</Text>
-//                                 <Text><Text style={styles.bold}>Condition:</Text> {item.condition}</Text>
-//                                 <Text><Text style={styles.bold}>Part:</Text> {item.part}</Text>
-//                                 <Text><Text style={styles.bold}>Description:</Text> {item.description}</Text>
-//                                 <Text><Text style={styles.bold}>Price:</Text> {item.price}</Text>
-//                             </View>
-//                         </View>
-//                     ))}
-
-//                     {savedItems.length === 0 && (
-//                         <Text style={styles.noItemsText}>No saved items yet</Text>
-//                     )}
-//                 </View>
-//             </View>
-//         </ScrollView>
-//     );
-// }
-
-// const styles = StyleSheet.create({
-//     scrollContainer: {
-//         flex: 1,
-//         backgroundColor: '#f5f5f5',
-//     },
-//     container: {
-//         padding: 20,
-//     },
-//     sectionTitle: {
-//         fontSize: 20,
-//         fontWeight: 'bold',
-//         marginBottom: 20,
-//         color: '#333',
-//     },
-//     imageSection: {
-//         marginBottom: 20,
-//     },
-//     imageButton: {
-//         backgroundColor: '#007AFF',
-//         padding: 15,
-//         borderRadius: 8,
-//         alignItems: 'center',
-//         marginBottom: 10,
-//     },
-//     multipleImageContainer: {
-//         flexDirection: 'row',
-//         marginTop: 10,
-//     },
-//     imagePreviewContainer: {
-//         position: 'relative',
-//         marginRight: 10,
-//     },
-//     imagePreview: {
-//         width: 100,
-//         height: 100,
-//         borderRadius: 8,
-//     },
-//     removeImageButton: {
-//         position: 'absolute',
-//         top: -5,
-//         right: -5,
-//         backgroundColor: '#ff4444',
-//         borderRadius: 10,
-//         width: 20,
-//         height: 20,
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-//     removeImageText: {
-//         color: 'white',
-//         fontWeight: 'bold',
-//         fontSize: 14,
-//     },
-//     imageCountText: {
-//         fontSize: 12,
-//         color: '#666',
-//         marginTop: 5,
-//         textAlign: 'center',
-//     },
-//     dropdownContainer: {
-//         marginBottom: 20,
-//     },
-//     label: {
-//         fontSize: 16,
-//         fontWeight: '600',
-//         marginBottom: 8,
-//         color: '#333',
-//     },
-//     optionsContainer: {
-//         flexDirection: 'row',
-//         flexWrap: 'wrap',
-//     },
-//     optionButton: {
-//         paddingHorizontal: 16,
-//         paddingVertical: 8,
-//         borderRadius: 20,
-//         backgroundColor: '#f0f0f0',
-//         marginRight: 8,
-//         marginBottom: 8,
-//     },
-//     selectedOption: {
-//         backgroundColor: '#007AFF',
-//     },
-//     optionText: {
-//         color: '#333',
-//     },
-//     selectedText: {
-//         color: 'white',
-//         fontWeight: '600',
-//     },
-//     inputContainer: {
-//         marginBottom: 20,
-//     },
-//     textInput: {
-//         borderWidth: 1,
-//         borderColor: '#ddd',
-//         borderRadius: 8,
-//         padding: 12,
-//         fontSize: 16,
-//         backgroundColor: 'white',
-//     },
-//     errorInput: {
-//         borderColor: '#ff4444',
-//     },
-//     buttonRow: {
-//         flexDirection: 'row',
-//         justifyContent: 'space-between',
-//         marginBottom: 30,
-//     },
-//     actionButton: {
-//         flex: 1,
-//         padding: 15,
-//         borderRadius: 8,
-//         alignItems: 'center',
-//         marginHorizontal: 5,
-//     },
-//     saveButton: {
-//         backgroundColor: '#4CAF50',
-//     },
-//     clearButton: {
-//         backgroundColor: '#FF9800',
-//     },
-//     buttonText: {
-//         color: 'white',
-//         fontWeight: 'bold',
-//         fontSize: 16,
-//     },
-//     savedSection: {
-//         marginTop: 20,
-//     },
-//     savedHeader: {
-//         flexDirection: 'row',
-//         justifyContent: 'space-between',
-//         alignItems: 'center',
-//         marginBottom: 15,
-//     },
-//     clearAllText: {
-//         color: '#ff4444',
-//         fontWeight: '600',
-//     },
-//     savedItem: {
-//         backgroundColor: 'white',
-//         padding: 15,
-//         borderRadius: 8,
-//         marginBottom: 10,
-//         shadowColor: '#000',
-//         shadowOffset: { width: 0, height: 1 },
-//         shadowOpacity: 0.1,
-//         shadowRadius: 3,
-//         elevation: 2,
-//     },
-//     savedImagesContainer: {
-//         flexDirection: 'row',
-//         marginBottom: 10,
-//     },
-//     savedImage: {
-//         width: 80,
-//         height: 80,
-//         borderRadius: 6,
-//         marginRight: 10,
-//     },
-//     savedDetails: {
-//         flex: 1,
-//     },
-//     bold: {
-//         fontWeight: 'bold',
-//     },
-//     noItemsText: {
-//         textAlign: 'center',
-//         color: '#666',
-//         fontStyle: 'italic',
-//         marginVertical: 20,
-//     },
-//     // Modal Styles
-//     modalContainer: {
-//         flex: 1,
-//         justifyContent: 'flex-end',
-//         backgroundColor: 'rgba(0,0,0,0.5)',
-//     },
-//     modalContent: {
-//         backgroundColor: 'white',
-//         borderTopLeftRadius: 20,
-//         borderTopRightRadius: 20,
-//         padding: 20,
-//         paddingBottom: 30,
-//     },
-//     modalTitle: {
-//         fontSize: 18,
-//         fontWeight: 'bold',
-//         textAlign: 'center',
-//         marginBottom: 20,
-//     },
-//     modalButton: {
-//         padding: 16,
-//         borderRadius: 10,
-//         backgroundColor: '#f8f8f8',
-//         marginBottom: 10,
-//         alignItems: 'center',
-//     },
-//     modalButtonText: {
-//         fontSize: 16,
-//         color: '#007AFF',
-//         fontWeight: '600',
-//     },
-//     cancelButton: {
-//         padding: 16,
-//         borderRadius: 10,
-//         backgroundColor: '#f8f8f8',
-//         alignItems: 'center',
-//         marginTop: 10,
-//     },
-//     cancelButtonText: {
-//         fontSize: 16,
-//         fontWeight: '600',
-//         color: '#ff4444',
-//     },
-// });
+import { useTranslation } from '@/hooks/useTranslation';
 import React, { useState } from 'react';
 import {
     Alert,
@@ -534,6 +40,7 @@ export default function ProductForm() {
         clearForm,
         clearAllSavedItems
     } = useProductForm();
+    const { t } = useTranslation();
 
     const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
 
@@ -599,10 +106,10 @@ export default function ProductForm() {
         <ScrollView style={styles.scrollContainer}>
             <View style={styles.container}>
                 {/* Current Form Inputs */}
-                <Text style={styles.sectionTitle}>Add New Item</Text>
+                <Text style={styles.sectionTitle}>{t('addItem')}</Text>
 
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Name:</Text>
+                    <Text style={styles.label}>{t('name')}:</Text>
                     <TextInput
                         style={[
                             styles.textInput,
@@ -615,7 +122,7 @@ export default function ProductForm() {
                     />
                 </View>
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Description:</Text>
+                    <Text style={styles.label}>{t('description')}:</Text>
                     <TextInput
                         style={styles.textInput}
                         value={description}
@@ -627,14 +134,14 @@ export default function ProductForm() {
                 </View>
                 {/* Image Section with Multiple Images and Camera */}
                 <View style={styles.imageSection}>
-                    <Text style={styles.label}>Images:</Text>
+                    <Text style={styles.label}>{t('images')}:</Text>
                     
                     {/* Main Add Images Button */}
                     <TouchableOpacity 
                         style={styles.imageButton} 
                         onPress={() => setImageSourceModalVisible(true)}
                     >
-                        <Text style={styles.buttonText}>Add Images</Text>
+                        <Text style={styles.buttonText}>{t('addImages')}</Text>
                     </TouchableOpacity>
                     
                     {/* Image Source Selection Modal */}
@@ -646,7 +153,7 @@ export default function ProductForm() {
                     >
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
-                                <Text style={styles.modalTitle}>Choose Image Source</Text>
+                                <Text style={styles.modalTitle}>{t('checkImageStorage')}</Text>
                                 
                                 <TouchableOpacity 
                                     style={styles.modalButton} 
@@ -665,14 +172,14 @@ export default function ProductForm() {
                                         takePhoto();
                                     }}
                                 >
-                                    <Text style={styles.modalButtonText}>Take Photo</Text>
+                                    <Text style={styles.modalButtonText}>{t('takePhoto')}</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity 
                                     style={styles.cancelButton}
                                     onPress={() => setImageSourceModalVisible(false)}
                                 >
-                                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                                    <Text style={styles.cancelButtonText}>{t('cancel')}</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -701,17 +208,17 @@ export default function ProductForm() {
                     )}
                 </View>
 
-                {renderDropdown(selectedSize, setSelectedSize, carType, 'Select Car Type')}
-                {renderDropdown(selectedCondition, setSelectedCondition, conditionOptions, 'Select Condition')}
-                {renderDropdown(selectedPart, setSelectedPart, partOptions, 'Select Part')}
+                {renderDropdown(selectedSize, setSelectedSize, carType, t('selectCarType'))}
+                {renderDropdown(selectedCondition, setSelectedCondition, conditionOptions, t('selectCondition'))}
+                {renderDropdown(selectedPart, setSelectedPart, partOptions, t('selectPart'))}
 
                 <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Price:</Text>
+                    <Text style={styles.label}>{t('price')}:</Text>
                     <TextInput
                         style={styles.textInput}
                         value={price}
                         onChangeText={setPrice}
-                        placeholder="Enter price"
+                        placeholder={t('enterPrice')}
                         placeholderTextColor="#CCCCCC"
                         keyboardType="numeric"
                     />
@@ -720,21 +227,21 @@ export default function ProductForm() {
                 {/* Action Buttons */}
                 <View style={styles.buttonRow}>
                     <TouchableOpacity style={[styles.actionButton, styles.saveButton]} onPress={handleSave}>
-                        <Text style={styles.buttonText}>Save & Clear Form</Text>
+                        <Text style={styles.buttonText}>{t('save')} </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.actionButton, styles.clearButton]} onPress={clearForm}>
-                        <Text style={styles.buttonText}>Clear Form Only</Text>
+                        <Text style={styles.buttonText}>{t('clear')}</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Saved Items Display */}
                 <View style={styles.savedSection}>
                     <View style={styles.savedHeader}>
-                        <Text style={styles.sectionTitle}>Saved Items ({savedItems.length})</Text>
+                        <Text style={styles.sectionTitle}>{t('savedItems')} ({savedItems.length})</Text>
                         {savedItems.length > 0 && (
                             <TouchableOpacity onPress={handleClearAll}>
-                                <Text style={styles.clearAllText}>Clear All</Text>
+                                <Text style={styles.clearAllText}>{t('clearAllData')}</Text>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -754,12 +261,12 @@ export default function ProductForm() {
                                 </ScrollView>
                             )}
                             <View style={styles.savedDetails}>
-                                <Text style={styles.savedText}><Text style={styles.bold}>Name:</Text> {item.name}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>Car Type:</Text> {item.size}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>Condition:</Text> {item.condition}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>Part:</Text> {item.part}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>Description:</Text> {item.description}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>Price:</Text> {item.price}</Text>
+                                <Text style={styles.savedText}><Text style={styles.bold}>{t('name')}:</Text> {item.name}</Text>
+                                <Text style={styles.savedText}><Text style={styles.bold}>{t('carType')}:</Text> {item.size}</Text>
+                                <Text style={styles.savedText}><Text style={styles.bold}>{t('condition')}:</Text> {item.condition}</Text>
+                                <Text style={styles.savedText}><Text style={styles.bold}>{t('part')}:</Text> {item.part}</Text>
+                                <Text style={styles.savedText}><Text style={styles.bold}>{t('description')}:</Text> {item.description}</Text>
+                                <Text style={styles.savedText}><Text style={styles.bold}>{t('price')}:</Text> {item.price}</Text>
                             </View>
                         </View>
                     ))}

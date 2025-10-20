@@ -1,4 +1,5 @@
 
+import { useLanguage } from "@/contexts/LanguageContext";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -15,8 +16,12 @@ import {
   View,
 } from "react-native";
 import { useProductForm } from "../../../hooks/useProductForm";
+import { useTranslation } from '../../../hooks/useTranslation';
 
 export default function ListScreen() {
+  const { t } = useTranslation();
+  const { isAmharic } = useLanguage();
+
   const router = useRouter();
   const { savedItems, loadSavedItems, deleteItem } = useProductForm();
 
@@ -79,7 +84,7 @@ export default function ListScreen() {
           <View>
             <Text style={styles.itemName}>{item.name}</Text>
             <View style={{ marginTop: 3, flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.carLabel}>Car Type: </Text>
+              <Text style={styles.carLabel}>{t('carType')+" "}: </Text>
               <Text style={styles.carValue}>{item.size}</Text>
             </View>
           </View>
@@ -110,7 +115,7 @@ export default function ListScreen() {
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Search items..."
+          placeholder={t("searchItems")+"..."}
           placeholderTextColor="#CCCCCC"
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -127,7 +132,7 @@ export default function ListScreen() {
 
       {/* Car Filter */}
       <View style={styles.filterContainer}>
-        <Text style={styles.filterLabel}>Filter by Car:</Text>
+        <Text style={styles.filterLabel}>{t('filterByCar')}:</Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -147,7 +152,7 @@ export default function ListScreen() {
                   : styles.filterText
               }
             >
-              All Cars
+              {t('allCars')}
             </Text>
           </TouchableOpacity>
           {availableCars.map((car) => (
@@ -166,15 +171,20 @@ export default function ListScreen() {
                     : styles.filterText
                 }
               >
-                {car}
-              </Text>
+   {isAmharic 
+        ? car === 'Dolphin' ? 'ዶልፊን' 
+          : car === 'Abadula' ? 'አባዱላ'
+          : car === 'Other' ? 'ሌላ'
+          : car
+        : car
+      }              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
       {/* Title */}
-      <Text style={styles.title}>Saved Items ({savedItems.length})</Text>
+      <Text style={styles.title}>{t('savedItems')} ({savedItems.length})</Text>
 
       <FlatList
         data={finalItems}

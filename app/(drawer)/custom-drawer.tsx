@@ -1,3 +1,4 @@
+import { useTranslation } from "@/hooks/useTranslation";
 import {
   Feather,
   FontAwesome5,
@@ -18,6 +19,8 @@ import {
 } from 'react-native';
 
 export default function CustomDrawerContent(props: DrawerContentComponentProps) {
+  const { t } = useTranslation();
+
   const router = useRouter();
   const pathname = usePathname();
   const [expandedSections, setExpandedSections] = useState({
@@ -83,7 +86,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
         {/* Home */}
         <NavigationItem
           route="/(tabs)"
-          label="Home"
+          label={t('home')}
           icon={
             <Ionicons 
               name="home" 
@@ -99,7 +102,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             style={styles.sectionHeader}
             onPress={() => toggleSection('engineTypes')}
           >
-            <Text style={styles.sectionHeaderText}>ENGINE TYPES</Text>
+            <Text style={styles.sectionHeaderText}>{t('engineTypes')}</Text>
             <Ionicons
               name={expandedSections.engineTypes ? "chevron-down" : "chevron-forward"}
               size={20}
@@ -111,7 +114,8 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             <View style={styles.sectionContent}>
               <NavigationItem
                 route="/5l"
-                label="5L Cars"
+                label= { "5L " + t('cars')}
+              
                 isNested
                 icon={
                   <FontAwesome5 
@@ -124,7 +128,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
               <NavigationItem
                 route="/3l"
-                label="3L Cars"
+                label= { "3L " + t('cars')}
                 isNested
                 icon={
                   <FontAwesome5 
@@ -137,7 +141,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
               <NavigationItem
                 route="/2l"
-                label="2L Cars"
+                label= { "2L " + t('cars')}
                 isNested
                 icon={
                   <FontAwesome5 
@@ -150,7 +154,8 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
               <NavigationItem
                 route="/other"
-                label="Other Cars"
+                label= { t('other')+" " + t('cars')}
+
                 isNested
                 icon={
                   <Ionicons 
@@ -170,7 +175,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             style={styles.sectionHeader}
             onPress={() => toggleSection('twoKD')}
           >
-            <Text style={styles.sectionHeaderText}>2KD</Text>
+            <Text style={styles.sectionHeaderText}>{t('twoKd')}</Text>
             <Ionicons
               name={expandedSections.twoKD ? "chevron-down" : "chevron-forward"}
               size={20}
@@ -182,7 +187,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             <View style={styles.sectionContent}>
               <NavigationItem
                 route="/dolphin"
-                label="Dolphin"
+                label= { t('dolphin') + " "+ t('cars')}
                 isNested
                 icon={
                   <MaterialIcons 
@@ -195,7 +200,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
               <NavigationItem
                 route="/abadula"
-                label="Abadula"
+                label= { t('abadula') + " "+ t('cars')}
                 isNested
                 icon={
                   <Ionicons 
@@ -212,7 +217,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
         {/* Todo List */}
         <NavigationItem
           route="/todo"
-          label="Todo List"
+          label={t('toDoList')}
           icon={
             <Feather 
               name="check-square" 
