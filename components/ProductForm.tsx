@@ -1,15 +1,19 @@
 
 import { useTranslation } from '@/hooks/useTranslation';
 import React, { useState } from 'react';
+
 import {
     Alert,
     Image,
+    KeyboardAvoidingView,
     Modal,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     View
 } from 'react-native';
 import { useProductForm } from '../hooks/useProductForm';
@@ -103,7 +107,14 @@ export default function ProductForm() {
     );
 
     return (
-        <ScrollView style={styles.scrollContainer}>
+        
+            // <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+            <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{ flex: 1, backgroundColor: '#0A1931' }} // ← SET SAME BACKGROUND COLOR
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 90}
+          >
+       <ScrollView style={styles.scrollContainer}>
             <View style={styles.container}>
                 {/* Current Form Inputs */}
                 <Text style={styles.sectionTitle}>{t('addItem')}</Text>
@@ -151,6 +162,8 @@ export default function ProductForm() {
                         visible={imageSourceModalVisible}
                         onRequestClose={() => setImageSourceModalVisible(false)}
                     >
+                                        <TouchableWithoutFeedback onPressOut={() => setImageSourceModalVisible(false)}>
+
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
                                 <Text style={styles.modalTitle}>{t('checkImageStorage')}</Text>
@@ -183,6 +196,7 @@ export default function ProductForm() {
                                 </TouchableOpacity>
                             </View>
                         </View>
+                        </TouchableWithoutFeedback>
                     </Modal>
                     
                     {/* Display Selected Images */}
@@ -277,6 +291,8 @@ export default function ProductForm() {
                 </View>
             </View>
         </ScrollView>
+        </KeyboardAvoidingView>
+
     );
 }
 

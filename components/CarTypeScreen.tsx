@@ -2,7 +2,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, FlatList, Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { useProductForm } from '../hooks/useProductForm';
 
 import { useLanguage } from '../contexts/LanguageContext';
@@ -260,6 +260,8 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
         visible={filterModalVisible}
         onRequestClose={() => setFilterModalVisible(false)}
       >
+                <TouchableWithoutFeedback onPressOut={() => setFilterModalVisible(false)}>
+
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Filter Items</Text>
@@ -329,6 +331,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
             </View>
           </View>
         </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );

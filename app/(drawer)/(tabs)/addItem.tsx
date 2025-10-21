@@ -6,7 +6,9 @@ import ProductForm from '../../../components/ProductForm'; // Adjust the import 
 const App = () => {
   return (
       <View style={styles.container}>
+
           <ProductForm />
+
       </View>
   );
 };
