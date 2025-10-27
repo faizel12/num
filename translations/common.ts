@@ -17,6 +17,7 @@ export const commonTranslations = {
       engineTypes:"ENGINE TYPES",
       'twoKd':"2KD",
       enterPrice:"Enter price",
+      enterDescription:"Enter Description",
       selectCarType:"Select Car Type",
 
       // Form Labels
@@ -46,6 +47,9 @@ export const commonTranslations = {
       'dolphin': 'Dolphin',
       'abadula': 'Abadula',
       '2L': '2L',
+      '2LT': '2LT',
+      'aynamaw': 'Aynamaw',
+      'highRoof': 'High Roof',
       'other': 'Other',
       
       // Parts
@@ -69,6 +73,7 @@ export const commonTranslations = {
       
       // Messages
       success: 'Success',
+      itemName:"Item Name",
       error: 'Error',
       loading: 'Loading...',
       itemNotFound: 'Item not found',
@@ -105,9 +110,48 @@ export const commonTranslations = {
       exists: 'Exists',
       missing: 'Missing',
 
-      searchItems:'search items'
+      searchItems:'search items',
+      'Select Car Type': 'Select Car Type',
+    'Select Condition': 'Select Condition', 
+    'Select Part': 'Select Part',
+    
+
+    'Motor': 'Motor',
+    'Leg': 'Leg',
+    'Body': 'Body',
+    'Meri': 'Meri',
+    'Hose': 'Hose',
+    'Other': 'Other',
+ 
+    'Dolphin': 'Dolphin',
+    'Aynamaw': 'Aynamaw',
+    'Abadula': 'Abadula',
+
+    'High Roof': 'High Roof',
+    applyFilter:"Apply Filter",
+      clearFilter:"Clear Filter",
     },
     am: {
+
+      applyFilter:"ማጣሪያዎችን ተግብር",
+      clearFilter:"ማጣሪያዎችን ያጽዱ",
+      'new': 'አዲስ',
+      'dubai': 'ዱባይ',
+      'Motor': 'ሞተር',
+      'Leg': 'እግር',
+      'Body': 'ቦዲ',
+      'sensors': 'ሴንሰሮች',
+      'Meri': 'መሪ',
+      'Hose': 'ሆዝ',
+      'Other': 'ሌላ',
+      '5L': '5L',
+      '3L': '3L',
+      'Dolphin': 'ዶልፊን',
+      'Aynamaw': 'አይናማው',
+      'Abadula': 'አባዱላ',
+      '2L': '2L',
+      '2LT': '2LT',
+      'High Roof': 'ሃይ ሩፍ',
       // Navigation
       home: 'መነሻ',
       settings: 'ቅንብሮች',
@@ -124,6 +168,8 @@ export const commonTranslations = {
       engineTypes:"የሞተር ዓይነቶች",
       twoKd:"2ኬዲ",
       enterPrice:"ዋጋ ያስገቡ",
+      enterDescription:"መግለጫ አስገባ",
+
       selectCarType:"የመኪና ዓይነት ይምረጡ",
       
       // Form Labels
@@ -141,30 +187,28 @@ export const commonTranslations = {
       selectCondition: 'ሁኔታ ምረጥ',
       selectPart: 'ክፍል ምረጥ',
       allCars:'ሁሉም መኪኖች',
+      itemName:"የመለዋወጫ ስም",
       
-      // Conditions
-      new: 'አዲስ',
-      dubai: 'ዱባይ',
+
       
       // Car Types (keeping same as English since they're model names)
-      '5L': '5L',
-      '3L': '3L',
+  
       'dolphin': 'ዶልፊን',
       'abadula': 'አባዱላ',
-      '2L': '2L',
       'other': 'ሌላ',
+      'aynamaw': 'አይናማው',
+      'highRoof': 'ሃይ ሩፍ',
       
       // Parts
       motor: 'ሞተር',
       leg: 'እግር',
-      body: 'ሰውነት',
-      sensors: 'ሴንሰሮች',
+      body: 'ቦዲ',
       meri: 'መሪ',
-      hose: 'ጦር',
+      hose: 'ሆዝ',
       
       // Actions
       save: 'አስቀምጥ',
-      cancel: 'ተወ',
+      cancel: 'ተው',
       delete: 'አጥፋ',
       update: 'አዘምን',
       clear: 'አጽዳ',

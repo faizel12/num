@@ -52,7 +52,7 @@ export const useProductForm = () => {
     // const { selectedImages, pickImages, takePhoto, removeImage, clearAllImages } = useImagePicker();   
     const [savedItems, setSavedItems] = useState<any[]>([]);
 
-    const carType = ['5L', '3L', 'Dolphin', 'Abadula','2L','Other'];
+    const carType = ['5L', '3L', 'Dolphin','Aynamaw', 'Abadula','2L','2LT','High Roof','Other'];
     const conditionOptions = ['new', 'dubai'];
     const partOptions = ['Motor', 'Leg', 'Body', 'sensors', 'Meri', 'Hose', 'Other'];
 
@@ -277,43 +277,6 @@ export const useProductForm = () => {
         imageUris: selectedImages
     });
 
-
-// Add this to your useProductForm hook
-// const getImageStorageInfo = async () => {
-//     try {
-//       const imagesDir = FileSystem.documentDirectory + 'product_images/';
-//       const dirInfo = await FileSystem.getInfoAsync(imagesDir);
-      
-//       let files: string[] = [];
-//       let totalSize = 0;
-      
-//       if (dirInfo.exists) {
-//         files = await FileSystem.readDirectoryAsync(imagesDir);
-        
-//         // Calculate total size
-//         for (const file of files) {
-//           const fileInfo = await FileSystem.getInfoAsync(imagesDir + file);
-//           if (fileInfo.exists && fileInfo.size) {
-//             totalSize += fileInfo.size;
-//           }
-//         }
-//       }
-      
-//       return {
-//         directory: imagesDir,
-//         exists: dirInfo.exists,
-//         fileCount: files.length,
-//         files: files,
-//         totalSize: totalSize,
-//         totalSizeMB: (totalSize / (1024 * 1024)).toFixed(2) + ' MB'
-//       };
-//     } catch (error) {
-//       console.error('Error getting storage info:', error);
-//       return null;
-//     }
-//   };
-
-    // ... your existing database functions (saveImagesToFileSystem, loadSavedItems, etc.) ...
 
     // Add this function to get storage info
     const getImageStorageInfo = async () => {

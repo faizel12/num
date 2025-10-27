@@ -236,7 +236,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
               </View>
             ))}
             <TouchableOpacity onPress={clearFilters} style={styles.clearAllButton}>
-              <Text style={styles.clearAllText}>Clear All</Text>
+              <Text style={styles.clearAllText}>{t('clear')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -283,7 +283,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
                       styles.filterOptionText,
                       selectedConditions.includes(condition) && styles.filterOptionTextSelected
                     ]}>
-                      {condition}
+                      {t(condition as any)}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -307,7 +307,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
                       styles.filterOptionText,
                       selectedParts.includes(part) && styles.filterOptionTextSelected
                     ]}>
-                      {part}
+                      {t(part as any)}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -320,13 +320,13 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
                 style={[styles.modalButton, styles.clearButtonModal]} 
                 onPress={clearFilters}
               >
-                <Text style={styles.clearButtonText}>Clear Filters</Text>
+                <Text style={styles.clearButtonText}>{t('clearFilter')}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.modalButton, styles.applyButton]} 
                 onPress={() => setFilterModalVisible(false)}
               >
-                <Text style={styles.applyButtonText}>Apply Filters</Text>
+                <Text style={styles.applyButtonText}>{t('applyFilter')}</Text>
               </TouchableOpacity>
             </View>
           </View>

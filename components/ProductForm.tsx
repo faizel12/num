@@ -98,7 +98,8 @@ export default function ProductForm() {
                         onPress={() => onSelect(option)}
                     >
                         <Text style={selectedValue === option ? styles.selectedText : styles.optionText}>
-                            {option}
+                            {t(option as any)} {/* Translate each option */}
+
                         </Text>
                     </TouchableOpacity>
                 ))}
@@ -128,7 +129,7 @@ export default function ProductForm() {
                         ]}
                         value={name}
                         onChangeText={setName}
-                        placeholder="Item Name *"
+                        placeholder={t('itemName') + " *"}
                         placeholderTextColor="#CCCCCC"
                     />
                 </View>
@@ -138,7 +139,7 @@ export default function ProductForm() {
                         style={styles.textInput}
                         value={description}
                         onChangeText={setDescription}
-                        placeholder="Enter description"
+                        placeholder={t('enterDescription')}
                         placeholderTextColor="#CCCCCC"
                         multiline
                     />

@@ -189,7 +189,7 @@ export default function EditScreen() {
                   : styles.optionText
               }
             >
-              {option}
+              {t(option as any)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -243,7 +243,7 @@ export default function EditScreen() {
             style={[styles.textInput, !name.trim() && styles.errorInput]}
             value={name}
             onChangeText={setName}
-            placeholder="Enter item name"
+            placeholder={t('itemName')}
             placeholderTextColor="#CCCCCC"
           />
         </View>
@@ -360,7 +360,7 @@ export default function EditScreen() {
             style={[styles.textInput, styles.textArea]}
             value={description}
             onChangeText={setDescription}
-            placeholder="Enter description"
+            placeholder={t("enterDescription")}
             placeholderTextColor="#CCCCCC"
             multiline
             numberOfLines={4}
@@ -374,7 +374,7 @@ export default function EditScreen() {
             style={styles.textInput}
             value={price}
             onChangeText={setPrice}
-            placeholder="Enter price"
+            placeholder={t('enterPrice')}
             placeholderTextColor="#CCCCCC"
             keyboardType="numeric"
           />

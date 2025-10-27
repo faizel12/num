@@ -85,7 +85,7 @@ export default function ListScreen() {
             <Text style={styles.itemName}>{item.name}</Text>
             <View style={{ marginTop: 3, flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.carLabel}>{t('carType')+" "}: </Text>
-              <Text style={styles.carValue}>{item.size}</Text>
+              <Text style={styles.carValue}>{t(item.size)}</Text>
             </View>
           </View>
         </View>

@@ -201,7 +201,7 @@ export default function DetailScreen() {
               styles.conditionBadge,
               item.condition === 'new' ? styles.newBadge : styles.dubaiBadge
             ]}>
-              <Text style={styles.conditionBadgeText}>{item.condition}</Text>
+              <Text style={styles.conditionBadgeText}>{t(item.condition)}</Text>
             </View>
           )}
         </View>
@@ -211,13 +211,13 @@ export default function DetailScreen() {
           <View style={styles.infoItem}>
             <FontAwesome name="car" size={16} color="#FFD700" />
             <Text style={styles.infoLabel}>{t('carType')}:</Text>
-            <Text style={styles.infoValue}>{item.size || 'Not specified'}</Text>
+            <Text style={styles.infoValue}>{t(item.size) || 'Not specified'}</Text>
           </View>
           
           <View style={styles.infoItem}>
             <FontAwesome name="puzzle-piece" size={16} color="#FFD700" />
             <Text style={styles.infoLabel}>{t('part')}:</Text>
-            <Text style={styles.infoValue}>{item.part || 'Not specified'}</Text>
+            <Text style={styles.infoValue}>{t(item.part) || 'Not specified'}</Text>
           </View>
           
           {item.price && (

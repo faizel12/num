@@ -114,7 +114,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             <View style={styles.sectionContent}>
               <NavigationItem
                 route="/5l"
-                label= { "5L " + t('cars')}
+                label= { "5L "}
               
                 isNested
                 icon={
@@ -128,7 +128,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
               <NavigationItem
                 route="/3l"
-                label= { "3L " + t('cars')}
+                label= { "3L "}
                 isNested
                 icon={
                   <FontAwesome5 
@@ -141,7 +141,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
               <NavigationItem
                 route="/2l"
-                label= { "2L " + t('cars')}
+                label= { "2L "}
                 isNested
                 icon={
                   <FontAwesome5 
@@ -152,9 +152,22 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
                 }
               />
 
+<NavigationItem
+                route="/2lt"
+                label= { "2LT "}
+                isNested
+                icon={
+                  <FontAwesome5 
+                    name="car-alt" 
+                    size={18} 
+                    color={isActive('/2lt') ? "#1a1a1a" : "#FFFFFF"} 
+                  />
+                }
+              />
+
               <NavigationItem
                 route="/other"
-                label= { t('other')+" " + t('cars')}
+                label= { t('other')}
 
                 isNested
                 icon={
@@ -187,7 +200,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             <View style={styles.sectionContent}>
               <NavigationItem
                 route="/dolphin"
-                label= { t('dolphin') + " "+ t('cars')}
+                label= { t('dolphin')}
                 isNested
                 icon={
                   <MaterialIcons 
@@ -197,16 +210,40 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
                   />
                 }
               />
+                    <NavigationItem
+                route="/aynamaw"
+                label= { t('aynamaw')}
+                isNested
+                icon={
+                  <MaterialIcons 
+                    name="directions-car" 
+                    size={20} 
+                    color={isActive('/aynamaw') ? "#1a1a1a" : "#FFFFFF"} 
+                  />
+                }
+              />
 
               <NavigationItem
                 route="/abadula"
-                label= { t('abadula') + " "+ t('cars')}
+                label= { t('abadula')}
                 isNested
                 icon={
                   <Ionicons 
                     name="car-sport" 
                     size={20} 
                     color={isActive('/abadula') ? "#1a1a1a" : "#FFFFFF"} 
+                  />
+                }
+              />
+                     <NavigationItem
+                route="/highRoof"
+                label= { t('highRoof')}
+                isNested
+                icon={
+                  <Ionicons 
+                    name="car-sport" 
+                    size={20} 
+                    color={isActive('/highRoof') ? "#1a1a1a" : "#FFFFFF"} 
                   />
                 }
               />
