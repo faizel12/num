@@ -20,7 +20,10 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.f123.num"
+      "package": "com.f123.num",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "static",
@@ -56,9 +59,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "19e5849a-99bb-40d2-977d-774a37270d50"
+        "projectId": "51b5a89b-fbeb-4303-9db2-d62353a66b54"
       }
     },
-    "owner": "f123"
+    "owner": "assss"
   }
 }
