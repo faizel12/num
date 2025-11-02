@@ -251,7 +251,7 @@ export default function ProductForm() {
                 </View>
 
                 {/* Saved Items Display */}
-                <View style={styles.savedSection}>
+                {/* <View style={styles.savedSection}>
                     <View style={styles.savedHeader}>
                         <Text style={styles.sectionTitle}>{t('savedItems')} ({savedItems.length})</Text>
                         {savedItems.length > 0 && (
@@ -261,9 +261,8 @@ export default function ProductForm() {
                         )}
                     </View>
 
-                    {savedItems.map((item) => (
+                    {savedItems.map((item:any) => (
                         <View key={item.id} style={styles.savedItem}>
-                            {/* Display multiple images for saved items */}
                             {item.imageUris && item.imageUris.length > 0 && (
                                 <ScrollView horizontal style={styles.savedImagesContainer}>
                                     {item.imageUris.map((imageUri:any, index:any) => (
@@ -289,7 +288,7 @@ export default function ProductForm() {
                     {savedItems.length === 0 && (
                         <Text style={styles.noItemsText}>No saved items yet</Text>
                     )}
-                </View>
+                </View> */}
             </View>
         </ScrollView>
         </KeyboardAvoidingView>
@@ -340,8 +339,8 @@ const styles = StyleSheet.create({
     },
     removeImageButton: {
         position: 'absolute',
-        top: -5,
-        right: -5,
+        top: 2,
+        right: 2,
         backgroundColor: '#ff4444',
         borderRadius: 10,
         width: 20,

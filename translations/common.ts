@@ -110,6 +110,7 @@ export const commonTranslations = {
       directory: 'Directory',
       exists: 'Exists',
       missing: 'Missing',
+      todo:'To Do',
 
       searchItems:'search items',
       'Select Car Type': 'Select Car Type',
@@ -131,8 +132,10 @@ export const commonTranslations = {
     'High Roof': 'High Roof',
     applyFilter:"Apply Filter",
       clearFilter:"Clear Filter",
+      gallery:'Gallery'
     },
     am: {
+      todo:'ማድረግ',
 backupRestore:"ወደነበረበት መመለስ",
       applyFilter:"ማጣሪያዎችን ተግብር",
       clearFilter:"ማጣሪያዎችን ያጽዱ",
@@ -228,6 +231,7 @@ backupRestore:"ወደነበረበት መመለስ",
       
       // Settings
       language: 'ቋንቋ',
+      gallery:"ምስሎች",
       english: 'English',
       amharic: 'አማርኛ',
       imageQuality: 'የምስል ጥራት',

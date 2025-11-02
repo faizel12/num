@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Colors from "./colors";
 
 export default function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { t } = useTranslation();
@@ -59,7 +60,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
           isNested && styles.nestedMenuItem,
           active && styles.activeMenuItem,
         ]}
-        onPress={() => router.push(route)}
+        onPress={() => router.push(route as never)}
       >
         <View style={styles.menuItemContent}>
           <View style={[styles.iconContainer, active && styles.activeIconContainer]}>
@@ -250,6 +251,8 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
             </View>
           )}
         </View>
+        
+        <View style={{height:2,marginVertical:10, width:"100%", backgroundColor:Colors.border.dark}} />
 
         {/* Todo List */}
         <NavigationItem
@@ -260,6 +263,19 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
               name="refresh-ccw" 
               size={20} 
               color={isActive('/todo') ? "#1a1a1a" : "#FFFFFF"} 
+            />
+          }
+        />
+
+<NavigationItem
+          route="/setting"
+          label={t('settings')}
+          
+          icon={
+            <Feather 
+              name="settings" 
+              size={20} 
+              color={isActive('/settings') ? "#1a1a1a" : "#FFFFFF"} 
             />
           }
         />

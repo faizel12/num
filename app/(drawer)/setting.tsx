@@ -10,9 +10,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { ImageQuality } from '../../../hooks/useImagePicker';
-import { useProductForm } from '../../../hooks/useProductForm';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { ImageQuality } from '../../hooks/useImagePicker';
+import { useProductForm } from '../../hooks/useProductForm';
 
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system/legacy';
@@ -394,32 +394,7 @@ const SettingsScreen = () => {
         </View>
       </View>
 
-      {/* App Info Section */}
-      <View style={styles.section}>
-        <View style={styles.toggleContainer}>
-          <Text style={styles.sectionTitle}>
-            {isAmharic ? 'ስለ መተግበሪያው' : 'About App'}
-          </Text>
-          
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>
-              {isAmharic ? 'የውሂብ አይነት' : 'Storage Type'}:
-            </Text>
-            <Text style={styles.infoValue}>SQLite Database</Text>
-          </View>
-          
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>
-              {isAmharic ? 'የምስል ጥራት' : 'Image Quality'}:
-            </Text>
-            <Text style={styles.infoValue}>
-              {imageQuality === 'high' ? (isAmharic ? 'ከፍተኛ' : 'High') :
-               imageQuality === 'medium' ? (isAmharic ? 'መካከለኛ' : 'Medium') :
-               (isAmharic ? 'ዝቅተኛ' : 'Low')}
-            </Text>
-          </View>
-        </View>
-      </View>
+ 
 
 
     </ScrollView>

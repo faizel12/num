@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,11 +16,14 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import Colors from "../(drawer)/colors";
 import { useProductForm } from "../../hooks/useProductForm";
 import { useTranslation } from "../../hooks/useTranslation";
 export default function EditScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams();
+  const navigation = useNavigation();
+
   const router = useRouter();
   const {
     savedItems,
@@ -79,11 +82,26 @@ export default function EditScreen() {
       setLoading(false);
     };
 
+ 
+
     if (id) {
       loadItemData();
     }
   }, [id, savedItems.length]); // Added dependency
 
+  useEffect(() => {
+    if (item) {
+      navigation.setOptions({
+        title: item.name || 'Part Details',
+        headerBackTitle: 'Back',
+        headerTintColor: Colors.text.primary,
+        headerStyle: {
+          backgroundColor: Colors.background.primary,
+        },
+              
+      });
+    }
+  }, [item, navigation]);
   const pickImages = async () => {
     setImageSourceModalVisible(false);
 

@@ -1,11 +1,10 @@
-
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, FlatList, Image, Modal, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import { useProductForm } from '../hooks/useProductForm';
-
+import Colors from '../app/(drawer)/colors'; // Import the color palette
 import { useLanguage } from '../contexts/LanguageContext';
+import { useProductForm } from '../hooks/useProductForm';
 import { useTranslation } from '../hooks/useTranslation';
 
 // Define the props type for the component
@@ -16,7 +15,6 @@ interface CarTypeScreenProps {
 export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
   
   const { t } = useTranslation();
-
   const { isAmharic, toggleLanguage } = useLanguage();
   
   const router = useRouter();
@@ -139,7 +137,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
             {/* Part and Metadata Row */}
             <View style={styles.metaContainer}>
               <View style={styles.partTag}>
-                <FontAwesome name="puzzle-piece" size={10} color="#FFD700" />
+                <FontAwesome name="puzzle-piece" size={10} color={Colors.primary[500]} />
                 <Text style={styles.partText}> {item.part}</Text>
               </View>
               
@@ -157,14 +155,14 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
           style={styles.iconButton}
           onPress={() => router.push(`/edit/${item.id}`)}
         >
-          <FontAwesome name="edit" size={14} color="#FFD700" />
+          <FontAwesome name="edit" size={14} color={Colors.primary[500]} />
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.iconButton}
           onPress={() => handleDelete(item.id)}
         >
-          <FontAwesome name="trash" size={14} color="#ff6b6b" />
+          <FontAwesome name="trash" size={14} color={Colors.status.error} />
         </TouchableOpacity>
       </View>
     </View>
@@ -173,28 +171,24 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{carType} 
-      
-      {isAmharic ? ' እቃዎች' : ' Items'}
-
-      
-      
-       ({filteredItems.length})</Text>
+        {isAmharic ? ' እቃዎች' : ' Items'} ({filteredItems.length})
+      </Text>
       
       {/* Search and Filter Bar */}
       <View style={styles.searchFilterContainer}>
         <View style={styles.searchContainer}>
-          <FontAwesome name="search" size={16} color="#CCCCCC" style={styles.searchIcon} />
+          <FontAwesome name="search" size={16} color={Colors.text.secondary} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search by name or description..."
-            placeholderTextColor="#CCCCCC"
+            placeholderTextColor={Colors.text.secondary}
             value={searchQuery}
             onChangeText={setSearchQuery}
             clearButtonMode="while-editing"
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
-              <FontAwesome name="times-circle" size={16} color="#CCCCCC" />
+              <FontAwesome name="times-circle" size={16} color={Colors.text.secondary} />
             </TouchableOpacity>
           )}
         </View>
@@ -203,7 +197,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
           style={[styles.filterButton, hasActiveFilters && styles.filterButtonActive]}
           onPress={() => setFilterModalVisible(true)}
         >
-          <FontAwesome name="filter" size={16} color={hasActiveFilters ? "#0A1931" : "#CCCCCC"} />
+          <FontAwesome name="filter" size={16} color={hasActiveFilters ? Colors.text.inverse : Colors.text.secondary} />
           {hasActiveFilters && (
             <View style={styles.filterBadge}>
               <Text style={styles.filterBadgeText}>
@@ -223,7 +217,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
               <View key={condition} style={styles.activeFilterTag}>
                 <Text style={styles.activeFilterText}>Condition: {condition}</Text>
                 <TouchableOpacity onPress={() => toggleCondition(condition)}>
-                  <FontAwesome name="times" size={12} color="#CCCCCC" />
+                  <FontAwesome name="times" size={12} color={Colors.text.secondary} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -231,7 +225,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
               <View key={part} style={styles.activeFilterTag}>
                 <Text style={styles.activeFilterText}>{t('part')}: {part}</Text>
                 <TouchableOpacity onPress={() => togglePart(part)}>
-                  <FontAwesome name="times" size={12} color="#CCCCCC" />
+                  <FontAwesome name="times" size={12} color={Colors.text.secondary} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -260,77 +254,76 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
         visible={filterModalVisible}
         onRequestClose={() => setFilterModalVisible(false)}
       >
-                <TouchableWithoutFeedback onPressOut={() => setFilterModalVisible(false)}>
+        <TouchableWithoutFeedback onPressOut={() => setFilterModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Filter Items</Text>
 
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Filter Items</Text>
-
-            {/* Condition Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterSectionTitle}>{t('condition')}</Text>
-              <View style={styles.filterOptions}>
-                {conditionOptions.map(condition => (
-                  <TouchableOpacity
-                    key={condition}
-                    style={[
-                      styles.filterOption,
-                      selectedConditions.includes(condition) && styles.filterOptionSelected
-                    ]}
-                    onPress={() => toggleCondition(condition)}
-                  >
-                    <Text style={[
-                      styles.filterOptionText,
-                      selectedConditions.includes(condition) && styles.filterOptionTextSelected
-                    ]}>
-                      {t(condition as any)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+              {/* Condition Filter */}
+              <View style={styles.filterSection}>
+                <Text style={styles.filterSectionTitle}>{t('condition')}</Text>
+                <View style={styles.filterOptions}>
+                  {conditionOptions.map(condition => (
+                    <TouchableOpacity
+                      key={condition}
+                      style={[
+                        styles.filterOption,
+                        selectedConditions.includes(condition) && styles.filterOptionSelected
+                      ]}
+                      onPress={() => toggleCondition(condition)}
+                    >
+                      <Text style={[
+                        styles.filterOptionText,
+                        selectedConditions.includes(condition) && styles.filterOptionTextSelected
+                      ]}>
+                        {t(condition as any)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
-            </View>
 
-            {/* Part Filter */}
-            <View style={styles.filterSection}>
-              <Text style={styles.filterSectionTitle}>{t('part')}</Text>
-              <View style={styles.filterOptions}>
-                {partOptions.map(part => (
-                  <TouchableOpacity
-                    key={part}
-                    style={[
-                      styles.filterOption,
-                      selectedParts.includes(part) && styles.filterOptionSelected
-                    ]}
-                    onPress={() => togglePart(part)}
-                  >
-                    <Text style={[
-                      styles.filterOptionText,
-                      selectedParts.includes(part) && styles.filterOptionTextSelected
-                    ]}>
-                      {t(part as any)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+              {/* Part Filter */}
+              <View style={styles.filterSection}>
+                <Text style={styles.filterSectionTitle}>{t('part')}</Text>
+                <View style={styles.filterOptions}>
+                  {partOptions.map(part => (
+                    <TouchableOpacity
+                      key={part}
+                      style={[
+                        styles.filterOption,
+                        selectedParts.includes(part) && styles.filterOptionSelected
+                      ]}
+                      onPress={() => togglePart(part)}
+                    >
+                      <Text style={[
+                        styles.filterOptionText,
+                        selectedParts.includes(part) && styles.filterOptionTextSelected
+                      ]}>
+                        {t(part as any)}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               </View>
-            </View>
 
-            {/* Modal Buttons */}
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.clearButtonModal]} 
-                onPress={clearFilters}
-              >
-                <Text style={styles.clearButtonText}>{t('clearFilter')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.modalButton, styles.applyButton]} 
-                onPress={() => setFilterModalVisible(false)}
-              >
-                <Text style={styles.applyButtonText}>{t('applyFilter')}</Text>
-              </TouchableOpacity>
+              {/* Modal Buttons */}
+              <View style={styles.modalButtons}>
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.clearButtonModal]} 
+                  onPress={clearFilters}
+                >
+                  <Text style={styles.clearButtonText}>{t('clearFilter')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.modalButton, styles.applyButton]} 
+                  onPress={() => setFilterModalVisible(false)}
+                >
+                  <Text style={styles.applyButtonText}>{t('applyFilter')}</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
         </TouchableWithoutFeedback>
       </Modal>
     </View>
@@ -341,14 +334,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#0A1931',
+    backgroundColor: Colors.background.primary,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
-    color: '#FFD700',
+    color: Colors.text.primary,
   },
   searchFilterContainer: {
     flexDirection: 'row',
@@ -359,11 +352,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a2b4d',
+    backgroundColor: Colors.background.secondary,
     borderRadius: 8,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#2d3e5d',
+    borderColor: Colors.border.light,
     marginRight: 12,
   },
   searchIcon: {
@@ -373,7 +366,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     fontSize: 16,
-    color: '#FFFFFF',
+    color: Colors.text.white,
   },
   clearButton: {
     padding: 4,
@@ -381,23 +374,23 @@ const styles = StyleSheet.create({
   filterButton: {
     width: 44,
     height: 44,
-    backgroundColor: '#1a2b4d',
+    backgroundColor: Colors.background.secondary,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#2d3e5d',
+    borderColor: Colors.border.light,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   filterButtonActive: {
-    backgroundColor: '#FFD700',
-    borderColor: '#FFD700',
+    backgroundColor: Colors.primary[500],
+    borderColor: Colors.primary[500],
   },
   filterBadge: {
     position: 'absolute',
     top: -5,
     right: -5,
-    backgroundColor: '#ff4444',
+    backgroundColor: Colors.status.error,
     borderRadius: 8,
     minWidth: 16,
     height: 16,
@@ -405,23 +398,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterBadgeText: {
-    color: 'white',
+    color: Colors.text.white,
     fontSize: 10,
     fontWeight: 'bold',
   },
   activeFiltersContainer: {
-    backgroundColor: '#1a2b4d',
+    backgroundColor: Colors.background.secondary,
     padding: 12,
     borderRadius: 8,
     marginBottom: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#FFD700',
+    borderLeftColor: Colors.primary[500],
   },
   activeFiltersText: {
     fontSize: 14,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#FFD700',
+    color: Colors.primary[500],
   },
   activeFiltersList: {
     flexDirection: 'row',
@@ -430,42 +423,42 @@ const styles = StyleSheet.create({
   activeFilterTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     marginRight: 8,
     marginBottom: 4,
     borderWidth: 1,
-    borderColor: '#3d4e6d',
+    borderColor: Colors.border.light,
   },
   activeFilterText: {
     fontSize: 12,
-    color: '#FFD700',
+    color: Colors.primary[500],
     marginRight: 4,
   },
   clearAllButton: {
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ff6b6b',
+    borderColor: Colors.status.error,
   },
   clearAllText: {
     fontSize: 12,
-    color: '#ff6b6b',
+    color: Colors.status.error,
   },
   contentArea: {
     flex: 1,
   },
   itemContainer: {
     flexDirection: 'row',
-    backgroundColor: '#1a2b4d',
+    backgroundColor: Colors.background.secondary,
     borderRadius: 12,
     marginBottom: 12,
     padding: 12,
-    shadowColor: '#000',
+    shadowColor: Colors.text.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -474,7 +467,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     borderLeftWidth: 4,
-    borderLeftColor: '#FFD700',
+    borderLeftColor: Colors.primary[500],
   },
   card: {
     flexDirection: 'row',
@@ -488,9 +481,9 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 8,
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     borderWidth: 1,
-    borderColor: '#3d4e6d',
+    borderColor: Colors.border.light,
   },
   conditionBadge: {
     position: 'absolute',
@@ -500,16 +493,16 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 8,
     borderWidth: 1.5,
-    borderColor: '#1a2b4d',
+    borderColor: Colors.background.secondary,
   },
   newBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: Colors.status.success,
   },
   dubaiBadge: {
-    backgroundColor: '#FF9800',
+    backgroundColor: Colors.status.warning,
   },
   conditionBadgeText: {
-    color: 'white',
+    color: Colors.text.white,
     fontSize: 8,
     fontWeight: 'bold',
   },
@@ -520,12 +513,12 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFD700',
+    color: Colors.text.primary,
     marginBottom: 4,
   },
   itemDescription: {
     fontSize: 13,
-    color: '#CCCCCC',
+    color: Colors.text.secondary,
     lineHeight: 16,
     marginBottom: 8,
   },
@@ -537,23 +530,23 @@ const styles = StyleSheet.create({
   partTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#3d4e6d',
+    borderColor: Colors.border.light,
   },
   partText: {
     fontSize: 11,
-    color: '#CCCCCC',
+    color: Colors.text.secondary,
     fontWeight: '500',
     marginLeft: 4,
   },
   priceText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#4CAF50',
+    color: Colors.status.success,
   },
   actionButtons: {
     flexDirection: 'column',
@@ -565,16 +558,16 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
     borderWidth: 1,
-    borderColor: '#3d4e6d',
+    borderColor: Colors.border.light,
   },
   emptyText: {
     textAlign: 'center',
-    color: '#CCCCCC',
+    color: Colors.text.secondary,
     fontStyle: 'italic',
     marginTop: 20,
     fontSize: 16,
@@ -585,7 +578,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
   },
   modalContent: {
-    backgroundColor: '#1a2b4d',
+    backgroundColor: Colors.background.secondary,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
@@ -596,7 +589,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
-    color: '#FFD700',
+    color: Colors.text.primary,
   },
   filterSection: {
     marginBottom: 20,
@@ -605,7 +598,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 12,
-    color: '#FFD700',
+    color: Colors.text.primary,
   },
   filterOptions: {
     flexDirection: 'row',
@@ -615,22 +608,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     marginRight: 8,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#3d4e6d',
+    borderColor: Colors.border.light,
   },
   filterOptionSelected: {
-    backgroundColor: '#FFD700',
-    borderColor: '#FFD700',
+    backgroundColor: Colors.primary[500],
+    borderColor: Colors.primary[500],
   },
   filterOptionText: {
-    color: '#CCCCCC',
+    color: Colors.text.secondary,
     fontSize: 14,
   },
   filterOptionTextSelected: {
-    color: '#0A1931',
+    color: Colors.text.inverse,
     fontWeight: '600',
   },
   modalButtons: {
@@ -646,19 +639,19 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   clearButtonModal: {
-    backgroundColor: '#2d3e5d',
+    backgroundColor: Colors.background.tertiary,
     borderWidth: 1,
-    borderColor: '#ff6b6b',
+    borderColor: Colors.status.error,
   },
   applyButton: {
-    backgroundColor: '#FFD700',
+    backgroundColor: Colors.primary[500],
   },
   clearButtonText: {
-    color: '#ff6b6b',
+    color: Colors.status.error,
     fontWeight: 'bold',
   },
   applyButtonText: {
-    color: '#0A1931',
+    color: Colors.text.inverse,
     fontWeight: 'bold',
   },
 });

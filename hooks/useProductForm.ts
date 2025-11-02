@@ -38,8 +38,8 @@ const initDatabase = () => {
 
 export const useProductForm = () => {
     const [selectedSize, setSelectedSize] = useState<string | null>('Other');
-    const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
-    const [selectedPart, setSelectedPart] = useState<string | null>(null);
+    const [selectedCondition, setSelectedCondition] = useState<string | null>('dubai');
+    const [selectedPart, setSelectedPart] = useState<string | null>('Other');
     const [description, setDescription] = useState('');
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');

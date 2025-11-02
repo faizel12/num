@@ -1,6 +1,6 @@
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Colors from '../(drawer)/colors';
 import { useProductForm } from '../../hooks/useProductForm';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -21,11 +22,14 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 export default function DetailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
- 
+
+  // Set the header title
+
 
   // Find the item by ID
   // const item = savedItems.find(savedItem => savedItem.id === id);
   const { id } = useLocalSearchParams();
+  const navigation = useNavigation();
   const { savedItems, deleteItem, loadSavedItems } = useProductForm(); // Added loadSavedItems
   const [fullScreenImage, setFullScreenImage] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -34,6 +38,48 @@ export default function DetailScreen() {
 
   console.log("Detail Screen - ID:", id, "Type:", typeof id);
   console.log("Saved Items Count:", savedItems.length);
+
+  useEffect(() => {
+    if (item) {
+      navigation.setOptions({
+        title: item.name || 'Part Details',
+        headerBackTitle: 'Back',
+        headerTintColor: Colors.text.primary,
+        headerStyle: {
+          backgroundColor: Colors.background.primary,
+        },
+        headerRight: () => (
+          <View style={{ flexDirection: 'row', marginRight: 15 }}>
+            <TouchableOpacity
+              style={{ 
+                marginRight: 15, 
+                padding: 8,
+                borderRadius: 8,
+                backgroundColor: Colors.background.tertiary,
+              }}
+              onPress={() => router.push(`/edit/${item.id}`)}
+            >
+              <FontAwesome name="edit" size={18} color={Colors.primary[500]} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={{ 
+                padding: 8,
+                borderRadius: 8,
+                backgroundColor: Colors.background.tertiary,
+              }}
+              onPress={handleDelete}
+            >
+              <FontAwesome name="trash" size={18} color={Colors.status.error} />
+            </TouchableOpacity>
+          </View>
+        ),        
+      });
+    }
+  }, [item, navigation]);
+
+
+
 
   // Load items and find the specific item
   useEffect(() => {
@@ -60,13 +106,7 @@ export default function DetailScreen() {
   }, [id, savedItems.length]); 
 
 
-  // if (!item) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.errorText}>Item not found</Text>
-  //     </View>
-  //   );
-  // }
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -141,32 +181,7 @@ export default function DetailScreen() {
   return (
     <ScrollView style={styles.container}>
       {/* Header with Back Button and Actions */}
-      <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <FontAwesome name="arrow-left" size={20} color="#FFD700" />
-        </TouchableOpacity>
-        
-        <Text style={styles.headerTitle}>{t('details')}</Text>
-        
-        <View style={styles.headerActions}>
-          <TouchableOpacity
-            style={styles.headerButton}
-            onPress={() => router.push(`/edit/${item.id}`)}
-          >
-            <FontAwesome name="edit" size={18} color="#FFD700" />
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={styles.headerButton}
-            onPress={handleDelete}
-          >
-            <FontAwesome name="trash" size={18} color="#ff6b6b" />
-          </TouchableOpacity>
-        </View>
-      </View>
+
 
       {/* Images Gallery */}
       {item.imageUris && item.imageUris.length > 0 && (
