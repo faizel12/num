@@ -14,6 +14,11 @@ import { useLanguage } from '../../../contexts/LanguageContext';
 import { ImageQuality } from '../../../hooks/useImagePicker';
 import { useProductForm } from '../../../hooks/useProductForm';
 
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system/legacy';
+const { StorageAccessFramework } = FileSystem;
+
+
 const SettingsScreen = () => {
   // const [isAmharic, setIsAmharic] = useState(false);
   const { language, isAmharic, toggleLanguage, setLanguage } = useLanguage();
@@ -258,6 +263,88 @@ const SettingsScreen = () => {
     );
   };
 
+
+
+
+  const handleBackupWithDocumentPicker = async () => {
+    try {
+      const now = new Date();
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const date = now.getDate().toString().padStart(2, '0');
+      const backupFileName = `backup_${month}_${date}.db`;
+  
+      // Let user choose where to save
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/x-sqlite3',
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+  
+      if (result.canceled) {
+        return;
+      }
+  
+      const dbPath = FileSystem.documentDirectory + 'SQLite/products.db';
+      
+      // Use the document picker's URI directly
+      await FileSystem.copyAsync({
+        from: dbPath,
+        to: result.assets[0].uri
+      });
+  
+      Alert.alert(
+        isAmharic ? 'በተሳካ ሁኔታ' : 'Success',
+        isAmharic 
+          ? `የውሂብ ምህዳር ተፈጥሯል: ${backupFileName}`
+          : `Backup created: ${backupFileName}`,
+        [{ text: 'OK' }]
+      );
+  
+    } catch (error) {
+      console.error('Backup failed:', error);
+      Alert.alert(
+        isAmharic ? 'ስህተት' : 'Error',
+        isAmharic ? 'የውሂብ ምህዳር ማድረግ አልተቻለም' : 'Failed to create backup',
+        [{ text: 'OK' }]
+      );
+    }
+  };
+
+  
+ 
+  
+  const handleRestoreDatabase = async (backupUri: string, backupName: string) => {
+    try {
+      const dbPath = FileSystem.documentDirectory + 'SQLite/products.db';
+      
+      // Copy backup file over current database
+      await FileSystem.copyAsync({
+        from: backupUri,
+        to: dbPath
+      });
+  
+      Alert.alert(
+        isAmharic ? 'በተሳካ ሁኔታ' : 'Success',
+        isAmharic 
+          ? `ውሂብ ከ "${backupName}" በተሳካ ሁኔታ ተመልሷል`
+          : `Data from "${backupName}" restored successfully`,
+        [{ 
+          text: 'OK',
+          onPress: () => {
+            // You might want to trigger a data refresh here
+            console.log('Database restored, app should reload data');
+          }
+        }]
+      );
+    } catch (error) {
+      console.error('Restore failed:', error);
+      Alert.alert(
+        isAmharic ? 'ስህተት' : 'Error',
+        isAmharic ? 'ውሂብ መመለስ አልተቻለም' : 'Failed to restore data',
+        [{ text: 'OK' }]
+      );
+    }
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -333,11 +420,32 @@ const SettingsScreen = () => {
           </View>
         </View>
       </View>
+
+
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  backupButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  restoreButton: {
+    backgroundColor: '#34C759',
+  },
+  backupButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  restoreButtonText: {
+    color: 'white',
+  },
   container: {
     flex: 1,
     backgroundColor: '#0A1931',

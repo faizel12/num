@@ -253,11 +253,11 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
 
         {/* Todo List */}
         <NavigationItem
-          route="/todo"
-          label={t('toDoList')}
+          route="/backUp"
+          label={t('backupRestore')}
           icon={
             <Feather 
-              name="check-square" 
+              name="refresh-ccw" 
               size={20} 
               color={isActive('/todo') ? "#1a1a1a" : "#FFFFFF"} 
             />

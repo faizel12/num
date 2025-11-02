@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SimpleEthiopianDatePicker from '../../components/SimpleEthiopianDatePicker';
-import { useTodo } from '../../hooks/useTodo';
+import SimpleEthiopianDatePicker from '../../../components/SimpleEthiopianDatePicker';
+import { useTodo } from '../../../hooks/useTodo';
 
 export default function TodoScreen() {
   const { 
@@ -79,55 +79,6 @@ export default function TodoScreen() {
       `Ethiopian: ${formatEthiopianDate(ethDate)}`
     );
   };
-
-  // const renderTodoItem = ({ item }: { item: any }) => (
-  //   <View style={[
-  //     styles.todoItem, 
-  //     item.completed && styles.completedItem,
-  //     isOverdue(item) && !item.completed && styles.overdueItem
-  //   ]}>
-  //     <TouchableOpacity
-  //       style={[styles.checkbox, item.completed && styles.checkedBox]}
-  //       onPress={() => toggleTodo(item.id)}
-  //     >
-  //       {item.completed && <Ionicons name="checkmark" size={16} color="white" />}
-  //     </TouchableOpacity>
-      
-  //     <View style={styles.todoContent}>
-  //       <Text style={[styles.todoText, item.completed && styles.completedText]}>
-  //         {item.text}
-  //       </Text>
-        
-  //       {/* Ethiopian Due Date Display */}
-  //       {item.dueDateEthiopian && (
-  //         <View style={[
-  //           styles.dueDateBadge,
-  //           isOverdue(item) && !item.completed && styles.overdueBadge
-  //         ]}>
-  //           <Ionicons 
-  //             name="calendar" 
-  //             size={12} 
-  //             color={isOverdue(item) && !item.completed ? '#ff4444' : '#FFD700'} 
-  //           />
-  //           <Text style={[
-  //             styles.dueDateText,
-  //             isOverdue(item) && !item.completed && styles.overdueText
-  //           ]}>
-  //             {formatEthiopianDate(item.dueDateEthiopian)}
-  //             {isOverdue(item) && !item.completed && ' (Overdue)'}
-  //           </Text>
-  //         </View>
-  //       )}
-  //     </View>
-      
-  //     <TouchableOpacity
-  //       style={styles.deleteButton}
-  //       onPress={() => handleDeleteTodo(item.id, item.text)}
-  //     >
-  //       <Ionicons name="trash-outline" size={18} color="#ff4444" />
-  //     </TouchableOpacity>
-  //   </View>
-  // );
 
 
   const renderTodoItem = ({ item }: { item: any }) => {

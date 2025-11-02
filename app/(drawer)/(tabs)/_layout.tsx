@@ -48,7 +48,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="plus" color={color} />,
         }}
       />
-      
+      <Tabs.Screen
+        name="todo"
+        options={{
+          title: 'TODO',
+          tabBarIcon: ({ color }) => <FontAwesome size={24} name="check-circle" color={color} />,
+        }}
+      />
+
       <Tabs.Screen
         name="setting"
         options={{

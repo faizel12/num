@@ -59,6 +59,7 @@ export const commonTranslations = {
       sensors: 'Sensors',
       meri: 'Meri',
       hose: 'Hose',
+      backupRestore:"Backup & Restore",
       
       // Actions
       save: 'Save',
@@ -132,7 +133,7 @@ export const commonTranslations = {
       clearFilter:"Clear Filter",
     },
     am: {
-
+backupRestore:"ወደነበረበት መመለስ",
       applyFilter:"ማጣሪያዎችን ተግብር",
       clearFilter:"ማጣሪያዎችን ያጽዱ",
       'new': 'አዲስ',

@@ -39,7 +39,7 @@ export default function Layout() {
       <Drawer.Screen name="dolphin" options={{ title: `${t('dolphin')} ${t('cars')}` }} />
       <Drawer.Screen name="abadula" options={{ title: `${t('abadula')} ${t('cars')}` }} />
       <Drawer.Screen name="other" options={{ title: `${t('other')} ${t('cars')}` }} />
-      <Drawer.Screen name="todo" options={{ title: "Todo List" }} />
+      <Drawer.Screen name="backUp" options={{ title: "BackUp & Restore" }} />
     </Drawer>
   );
 }
