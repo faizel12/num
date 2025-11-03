@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import SimpleEthiopianDatePicker from '../../../components/SimpleEthiopianDatePicker';
-import { useTodo } from '../../../hooks/useTodo';
+import SimpleEthiopianDatePicker from '../../components/SimpleEthiopianDatePicker';
+import { useTodo } from '../../hooks/useTodo';
 
 export default function TodoScreen() {
   const { 

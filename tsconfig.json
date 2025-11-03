@@ -14,5 +14,5 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "app/_layout.jsx"
-, "app/(drawer)/(tabs)/todo.tsx", "app/utils/dataexportmanagerExample.js"  ]
+, "app/(drawer)/todo.tsx", "app/utils/dataexportmanagerExample.js"  ]
 }

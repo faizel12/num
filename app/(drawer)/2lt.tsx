@@ -1,5 +1,5 @@
 import CarTypeScreen from '../../components/CarTypeScreen';
 
-export default function ThreeLScreen() {
+export default function TwoLTScreen() {
   return <CarTypeScreen carType="2LT" />;
 }

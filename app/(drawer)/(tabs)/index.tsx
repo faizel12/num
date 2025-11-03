@@ -1,359 +1,602 @@
-
-import { useLanguage } from "@/contexts/LanguageContext";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+// app/(tabs)/index.tsx (Dashboard)
+import { useProductForm } from '@/hooks/useProductForm';
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  Image,
+  Animated,
+  Dimensions,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useProductForm } from "../../../hooks/useProductForm";
-import { useTranslation } from '../../../hooks/useTranslation';
+} from 'react-native';
+import Colors from '../colors';
 
-export default function ListScreen() {
-  const { t } = useTranslation();
-  const { isAmharic } = useLanguage();
+const { width } = Dimensions.get('window');
 
+export default function DashboardScreen() {
   const router = useRouter();
-  const { savedItems, loadSavedItems, deleteItem } = useProductForm();
-
+  const { 
+    getDashboardSummary, 
+    getEngineTypeStatistics, 
+    getProductsByEngineType,
+    loadSavedItems 
+  } = useProductForm();
+  
+  const [summary, setSummary] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedCarFilter, setSelectedCarFilter] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [fadeAnim] = useState(new Animated.Value(0));
 
-  const filteredByCar = selectedCarFilter
-    ? savedItems.filter((item) => item.size === selectedCarFilter)
-    : savedItems;
+  const loadData = async () => {
+    const dashboardSummary = getDashboardSummary();
+    const engineStats = getEngineTypeStatistics();
+    setSummary(dashboardSummary);
+    setStats(engineStats);
+    
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+  };
 
-  const finalItems = filteredByCar.filter(
-    (item) =>
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.size?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.part?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const availableCars = [
-    ...new Set(savedItems.map((item) => item.size)),
-  ].filter(Boolean);
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
     await loadSavedItems();
+    loadData();
     setRefreshing(false);
   };
 
-  const handleItemPress = (itemId: string) => {
-    router.push(`/detail/${itemId}`);
+  const navigateToEngineType = (engineType: string) => {
+
+    console.log("first", engineType.toLocaleLowerCase());
+    router.push(`/${engineType.toLocaleLowerCase()}` as never);
   };
 
-  const handleDelete = async (itemId: string) => {
-    Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          const success = await deleteItem(itemId);
-          if (success) {
-            // Item will be automatically removed from the list
-          }
-        },
-      },
-    ]);
+  const navigateToAddItem = () => {
+    router.push('/addItem');
   };
 
-  const renderItem = ({ item }: any) => (
-    <View style={styles.itemContainer}>
-      <TouchableOpacity
-        style={styles.contentArea}
-        onPress={() => handleItemPress(item.id)}
-      >
-        <View key={item.id} style={styles.savedItem}>
-          {item.imageUris && (
-            <Image source={{ uri: item.imageUris[0] }} style={styles.savedImage} />
-          )}
-          <View>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <View style={{ marginTop: 3, flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.carLabel}>{t('carType')+" "}: </Text>
-              <Text style={styles.carValue}>{t(item.size)}</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-
-      <View style={styles.iconRow}>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => router.push(`/edit/${item.id}`)}
-        >
-          <FontAwesome name="pencil" size={16} color="#FFD700" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={() => handleDelete(item.id)}
-        >
-          <FontAwesome name="trash" size={16} color="#ff6b6b" />
-        </TouchableOpacity>
+  if (!summary) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading Dashboard...</Text>
       </View>
-    </View>
-  );
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder={t("searchItems")+"..."}
-          placeholderTextColor="#CCCCCC"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {searchQuery.length > 0 && (
-          <TouchableOpacity
-            style={styles.clearSearch}
-            onPress={() => setSearchQuery("")}
+    <ScrollView 
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      showsVerticalScrollIndicator={false}
+    >
+      <Animated.View style={{ opacity: fadeAnim }}>
+        
+        {/* Header Section */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>Welcome to</Text>
+            <Text style={styles.appTitle}>Engine Parts Catalog</Text>
+          </View>
+          <TouchableOpacity 
+            style={styles.addButton}
+            onPress={navigateToAddItem}
           >
-            <FontAwesome name="times" size={16} color="#CCCCCC" />
+            <Ionicons name="add" size={24} color={Colors.navy[900]} />
           </TouchableOpacity>
-        )}
-      </View>
+        </View>
 
-      {/* Car Filter */}
-      <View style={styles.filterContainer}>
-        <Text style={styles.filterLabel}>{t('filterByCar')}:</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterScroll}
-        >
-          <TouchableOpacity
-            style={[
-              styles.filterButton,
-              selectedCarFilter === null && styles.selectedFilter,
-            ]}
-            onPress={() => setSelectedCarFilter(null)}
-          >
-            <Text
-              style={
-                selectedCarFilter === null
-                  ? styles.selectedFilterText
-                  : styles.filterText
-              }
-            >
-              {t('allCars')}
-            </Text>
-          </TouchableOpacity>
-          {availableCars.map((car) => (
-            <TouchableOpacity
-              key={car}
-              style={[
-                styles.filterButton,
-                selectedCarFilter === car && styles.selectedFilter,
-              ]}
-              onPress={() => setSelectedCarFilter(car)}
-            >
-              <Text
-                style={
-                  selectedCarFilter === car
-                    ? styles.selectedFilterText
-                    : styles.filterText
-                }
-              >
-   {isAmharic 
-        ? car === 'Dolphin' ? 'ዶልፊን' 
-          : car === 'Abadula' ? 'አባዱላ'
-          : car === 'Other' ? 'ሌላ'
-          : car
-        : car
-      }              </Text>
+        {/* Overview Cards */}
+        <View style={styles.overviewSection}>
+          <View style={styles.overviewRow}>
+            <View style={[styles.overviewCard, styles.totalCard]}>
+              <View style={styles.cardIcon}>
+                <FontAwesome5 name="boxes" size={20} color={Colors.primary[500]} />
+              </View>
+              <Text style={styles.overviewNumber}>{summary.totalProducts}</Text>
+              <Text style={styles.overviewLabel}>Total Parts</Text>
+            </View>
+
+            <View style={[styles.overviewCard, styles.partCard]}>
+              <View style={styles.cardIcon}>
+                <MaterialIcons name="precision-manufacturing" size={20} color={Colors.primary[500]} />
+              </View>
+              <Text style={styles.overviewNumber}>{summary.registeredEngineTypes}</Text>
+              <Text style={styles.overviewLabel}>Active Engine Types</Text>
+            </View>
+          </View>
+
+        </View>
+
+        {/* Top Engine Types */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Top Engine Types</Text>
+            <TouchableOpacity onPress={() => router.push('/(tabs)' as never)}>
+              <Text style={styles.seeAllText}>See All</Text>
             </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+          </View>
+          
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.horizontalScroll}
+          >
+            {summary.topEngineTypes.map((engine: any, index: number) => (
+              <TouchableOpacity 
+                key={engine.name}
+                style={[
+                  styles.engineCard,
+                  styles.horizontalCard,
+                  index === 0 && styles.firstCard
+                ]}
+                onPress={() => navigateToEngineType(engine.name)}
+              >
+                <View style={styles.engineIcon}>
+                  <FontAwesome5 
+                    name={engine.name.includes('2KD') ? 'tachometer-alt' : 'cogs'} 
+                    size={24} 
+                    color={Colors.primary[500]} 
+                  />
+                </View>
+                <Text style={styles.engineName}>{engine.name}</Text>
+                <Text style={styles.engineCount}>{engine.count} parts</Text>
+                <View style={styles.rankBadge}>
+                  <Text style={styles.rankText}>#{index + 1}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-      {/* Title */}
-      <Text style={styles.title}>{t('savedItems')} ({savedItems.length})</Text>
+        {/* Top Parts */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Most Common Parts</Text>
+          </View>
+          
+          <View style={styles.partsGrid}>
+            {summary.topParts.map((part: any, index: number) => (
+              <View key={part.part} style={styles.partItem}>
+                <View style={styles.partInfo}>
+                  <Text style={styles.partName}>{part.part}</Text>
+                  <Text style={styles.partCount}>{part.count} items</Text>
+                </View>
+                <View style={[
+                  styles.partBar,
+                  { width: `${(part.count / Math.max(...summary.topParts.map((p: any) => p.count))) * 80}%` }
+                ]} />
+              </View>
+            ))}
+          </View>
+        </View>
 
-      <FlatList
-        data={finalItems}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh}
-            colors={["#FFD700"]}
-            tintColor="#FFD700"
-          />
-        }
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            {selectedCarFilter
-              ? `No items for ${selectedCarFilter}`
-              : "No items saved yet"}
-          </Text>
-        }
-      />
-    </View>
+        {/* Quick Actions */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <View style={{marginBottom:12}}/>
+          <View style={styles.actionsGrid}>
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={navigateToAddItem}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
+                <Ionicons name="add-circle" size={32} color={Colors.primary[500]} />
+              </View>
+              <Text style={styles.actionText}>Add New Part</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/(tabs)/allItems' as never)}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: 'rgba(52, 199, 89, 0.1)' }]}>
+                <Ionicons name="checkmark-done" size={32} color={Colors.status.success} />
+              </View>
+              <Text style={styles.actionText}>Inventory Check</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/backUp')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: 'rgba(0, 122, 255, 0.1)' }]}>
+                <Ionicons name="cloud-upload" size={32} color={Colors.status.info} />
+              </View>
+              <Text style={styles.actionText}>Backup Data</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.actionCard}
+              onPress={() => router.push('/setting')}
+            >
+              <View style={[styles.actionIcon, { backgroundColor: 'rgba(142, 142, 147, 0.1)' }]}>
+                <Ionicons name="settings" size={32} color={Colors.text.tertiary} />
+              </View>
+              <Text style={styles.actionText}>Settings</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Recent Activity */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Recent Additions</Text>
+            <TouchableOpacity onPress={() => router.push('/(tabs)/allItems' as never) }>
+              <Text style={styles.seeAllText}>View All</Text>
+            </TouchableOpacity>
+          </View>
+          
+          {stats.engineTypes
+            .filter((engine: any) => engine.count > 0)
+            .slice(0, 3)
+            .map((engine: any) => (
+              <TouchableOpacity 
+                key={engine.name}
+                style={styles.recentItem}
+                onPress={() => navigateToEngineType(engine.name)}
+              >
+                <View style={styles.recentIcon}>
+                  <FontAwesome5 
+                    name="box" 
+                    size={16} 
+                    color={Colors.primary[500]} 
+                  />
+                </View>
+                <View style={styles.recentInfo}>
+                  <Text style={styles.recentName}>{engine.name}</Text>
+                  <Text style={styles.recentDetails}>
+                    {engine.count} parts • {Object.values(engine.partBreakdown).filter((count: any) => count > 0).length} categories
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={16} color={Colors.text.tertiary} />
+              </TouchableOpacity>
+            ))}
+        </View>
+
+        {/* Empty State */}
+        {summary.totalProducts === 0 && (
+          <View style={styles.emptyState}>
+            <View style={styles.emptyIcon}>
+              <FontAwesome5 name="boxes" size={48} color={Colors.text.tertiary} />
+            </View>
+            <Text style={styles.emptyTitle}>No Parts Added Yet</Text>
+            <Text style={styles.emptyText}>
+              Start building your engine parts catalog by adding your first item.
+            </Text>
+            <TouchableOpacity 
+              style={styles.emptyButton}
+              onPress={navigateToAddItem}
+            >
+              <Text style={styles.emptyButtonText}>Add First Part</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+      </Animated.View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#0A1931',
-    padding: 16, 
-  },
-  title: { 
-    fontSize: 24, 
-    fontWeight: "bold", 
-    marginBottom: 16,
-    color: '#FFD700',
-  },
-  searchContainer: {
-    position: "relative",
-    marginBottom: 16,
-  },
-  searchInput: {
-    backgroundColor: "#1a2b4d",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#2d3e5d",
-    fontSize: 16,
-    color: '#FFFFFF',
-  },
-  clearSearch: {
-    position: "absolute",
-    right: 12,
-    top: 12,
-    padding: 4,
-  },
-  itemContainer: {
-    backgroundColor: "#1a2b4d",
-    padding: 16,
-    marginBottom: 12,
-    borderRadius: 8,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    borderLeftWidth: 3,
-    borderLeftColor: '#FFD700',
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 8,
-  },
-  iconRow: {
-    flexDirection: "column",
-    gap: 15,
-    padding: 10,
-    marginLeft: 10,
-    alignItems: "stretch",
-    justifyContent: "center",
-  },
-  iconButton: {
-    padding: 0,
-  },
-  savedImage: { 
-    width: 60, 
-    height: 60, 
-    borderRadius: 4, 
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: '#2d3e5d',
-  },
-  savedItem: {
-    backgroundColor: "transparent",
-    padding: 5,
-    borderRadius: 8,
-    flexDirection: "row",
-  },
-  contentArea: {
+  container: {
     flex: 1,
+    backgroundColor: Colors.background.primary,
   },
-  itemName: { 
-    fontSize: 16, 
-    fontWeight: "bold", 
-    maxWidth: 200,
-    color: '#FFD700',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.background.primary,
   },
-  carLabel: {
+  loadingText: {
+    color: Colors.text.secondary,
+    fontSize: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  greeting: {
+    color: Colors.text.secondary,
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  appTitle: {
+    color: Colors.text.primary,
+    fontSize: 24,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  addButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: Colors.primary[500],
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: Colors.primary[500],
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  overviewSection: {
+    paddingHorizontal: 16,
+    marginVertical: 16,
+  },
+  overviewRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  overviewCard: {
+    flex: 1,
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 16,
+    padding: 20,
+    marginHorizontal: 6,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  totalCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.primary[500],
+  },
+
+  partCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.status.success,
+  },
+  coverageCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.status.warning,
+  },
+  cardIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  overviewNumber: {
+    color: Colors.text.primary,
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  overviewLabel: {
+    color: Colors.text.tertiary,
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  section: {
+    marginVertical: 8,
+    paddingHorizontal: 20,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    color: Colors.text.primary,
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginBlock:2
+  },
+  seeAllText: {
+    color: Colors.primary[500],
     fontSize: 14,
-    color: '#CCCCCC',
-  },
-  carValue: {
-    fontSize: 14,
-    color: '#FFD700',
     fontWeight: '600',
   },
-  itemDetails: { 
-    fontSize: 14, 
-    color: "#CCCCCC", 
-    marginTop: 4 
+  horizontalScroll: {
+    marginHorizontal: -20,
+    paddingHorizontal: 20,
+  },
+  horizontalCard: {
+    width: width * 0.6,
+    marginRight: 12,
+  },
+  firstCard: {
+    marginLeft: 0,
+  },
+  engineCard: {
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 16,
+    padding: 20,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  engineIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  engineName: {
+    color: Colors.text.primary,
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  engineCount: {
+    color: Colors.text.tertiary,
+    fontSize: 14,
+  },
+  rankBadge: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: Colors.primary[500],
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  rankText: {
+    color: Colors.navy[900],
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  partsGrid: {
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 16,
+    padding: 16,
+  },
+  partItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  partInfo: {
+    flex: 1,
+  },
+  partName: {
+    color: Colors.text.primary,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  partCount: {
+    color: Colors.text.tertiary,
+    fontSize: 12,
+  },
+  partBar: {
+    height: 4,
+    backgroundColor: Colors.primary[500],
+    borderRadius: 2,
+    marginLeft: 12,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  actionCard: {
+    width: (width - 60) / 2,
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  actionIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  actionText: {
+    color: Colors.text.primary,
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  recentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.background.secondary,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+  },
+  recentIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  recentInfo: {
+    flex: 1,
+  },
+  recentName: {
+    color: Colors.text.primary,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  recentDetails: {
+    color: Colors.text.tertiary,
+    fontSize: 12,
+  },
+  emptyState: {
+    alignItems: 'center',
+    padding: 40,
+    marginTop: 20,
+  },
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    color: Colors.text.primary,
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 8,
+    textAlign: 'center',
   },
   emptyText: {
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 16,
-    color: "#CCCCCC",
-  },
-  filterContainer: {
-    marginBottom: 16,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 8,
-    color: "#FFD700",
-  },
-  filterScroll: {
-    flexGrow: 0,
-  },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: "#1a2b4d",
-    borderRadius: 20,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: "#2d3e5d",
-  },
-  selectedFilter: {
-    backgroundColor: "#FFD700",
-    borderColor: "#FFD700",
-  },
-  filterText: {
-    color: "#CCCCCC",
+    color: Colors.text.tertiary,
     fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
   },
-  selectedFilterText: {
-    color: "#0A1931",
-    fontSize: 14,
-    fontWeight: "bold",
+  emptyButton: {
+    backgroundColor: Colors.primary[500],
+    borderRadius: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+  },
+  emptyButtonText: {
+    color: Colors.navy[900],
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
-
-
-// eas build -p android --profile preview
-
