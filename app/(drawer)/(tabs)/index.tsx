@@ -1,5 +1,6 @@
 // app/(tabs)/index.tsx (Dashboard)
 import { useProductForm } from '@/hooks/useProductForm';
+import { useTranslation } from '@/hooks/useTranslation';
 import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -18,6 +19,8 @@ import Colors from '../colors';
 const { width } = Dimensions.get('window');
 
 export default function DashboardScreen() {
+  const { t } = useTranslation();
+
   const router = useRouter();
   const { 
     getDashboardSummary, 
@@ -86,8 +89,8 @@ export default function DashboardScreen() {
         {/* Header Section */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Welcome to</Text>
-            <Text style={styles.appTitle}>Engine Parts Catalog</Text>
+            <Text style={styles.greeting}>{t('welcomeTo')}</Text>
+            <Text style={styles.appTitle}>{t('enginePartsCatalog')}</Text>
           </View>
           <TouchableOpacity 
             style={styles.addButton}
@@ -105,7 +108,7 @@ export default function DashboardScreen() {
                 <FontAwesome5 name="boxes" size={20} color={Colors.primary[500]} />
               </View>
               <Text style={styles.overviewNumber}>{summary.totalProducts}</Text>
-              <Text style={styles.overviewLabel}>Total Parts</Text>
+              <Text style={styles.overviewLabel}>{t('totalParts')}</Text>
             </View>
 
             <View style={[styles.overviewCard, styles.partCard]}>
@@ -113,7 +116,7 @@ export default function DashboardScreen() {
                 <MaterialIcons name="precision-manufacturing" size={20} color={Colors.primary[500]} />
               </View>
               <Text style={styles.overviewNumber}>{summary.registeredEngineTypes}</Text>
-              <Text style={styles.overviewLabel}>Active Engine Types</Text>
+              <Text style={styles.overviewLabel}>{t('activeEngineTypes')}</Text>
             </View>
           </View>
 
@@ -122,9 +125,9 @@ export default function DashboardScreen() {
         {/* Top Engine Types */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Top Engine Types</Text>
+            <Text style={styles.sectionTitle}>{t('topEngineTypes')}</Text>
             <TouchableOpacity onPress={() => router.push('/(tabs)' as never)}>
-              <Text style={styles.seeAllText}>See All</Text>
+              <Text style={styles.seeAllText}>{t('seeAll')}</Text>
             </TouchableOpacity>
           </View>
           
@@ -150,8 +153,8 @@ export default function DashboardScreen() {
                     color={Colors.primary[500]} 
                   />
                 </View>
-                <Text style={styles.engineName}>{engine.name}</Text>
-                <Text style={styles.engineCount}>{engine.count} parts</Text>
+                <Text style={styles.engineName}>{t(engine.name)}</Text>
+                <Text style={styles.engineCount}>{engine.count} {t('part')}</Text>
                 <View style={styles.rankBadge}>
                   <Text style={styles.rankText}>#{index + 1}</Text>
                 </View>
@@ -163,7 +166,7 @@ export default function DashboardScreen() {
         {/* Top Parts */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Most Common Parts</Text>
+            <Text style={styles.sectionTitle}>{t('mostCommonParts')}</Text>
           </View>
           
           <View style={styles.partsGrid}>
@@ -171,7 +174,7 @@ export default function DashboardScreen() {
               <View key={part.part} style={styles.partItem}>
                 <View style={styles.partInfo}>
                   <Text style={styles.partName}>{part.part}</Text>
-                  <Text style={styles.partCount}>{part.count} items</Text>
+                  <Text style={styles.partCount}>{part.count} {t('items')}</Text>
                 </View>
                 <View style={[
                   styles.partBar,
@@ -184,7 +187,7 @@ export default function DashboardScreen() {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle}>{t('quickActions')}</Text>
           <View style={{marginBottom:12}}/>
           <View style={styles.actionsGrid}>
             <TouchableOpacity 
@@ -194,7 +197,7 @@ export default function DashboardScreen() {
               <View style={[styles.actionIcon, { backgroundColor: 'rgba(255, 215, 0, 0.1)' }]}>
                 <Ionicons name="add-circle" size={32} color={Colors.primary[500]} />
               </View>
-              <Text style={styles.actionText}>Add New Part</Text>
+              <Text style={styles.actionText}>{t('addNewPart')} </Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -204,7 +207,7 @@ export default function DashboardScreen() {
               <View style={[styles.actionIcon, { backgroundColor: 'rgba(52, 199, 89, 0.1)' }]}>
                 <Ionicons name="checkmark-done" size={32} color={Colors.status.success} />
               </View>
-              <Text style={styles.actionText}>Inventory Check</Text>
+              <Text style={styles.actionText}>{t('inventoryCheck')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -214,7 +217,7 @@ export default function DashboardScreen() {
               <View style={[styles.actionIcon, { backgroundColor: 'rgba(0, 122, 255, 0.1)' }]}>
                 <Ionicons name="cloud-upload" size={32} color={Colors.status.info} />
               </View>
-              <Text style={styles.actionText}>Backup Data</Text>
+              <Text style={styles.actionText}>{t('backupData')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -224,7 +227,7 @@ export default function DashboardScreen() {
               <View style={[styles.actionIcon, { backgroundColor: 'rgba(142, 142, 147, 0.1)' }]}>
                 <Ionicons name="settings" size={32} color={Colors.text.tertiary} />
               </View>
-              <Text style={styles.actionText}>Settings</Text>
+              <Text style={styles.actionText}>{t('settings')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -232,9 +235,9 @@ export default function DashboardScreen() {
         {/* Recent Activity */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Additions</Text>
+            <Text style={styles.sectionTitle}>{t('recentAdditions')}</Text>
             <TouchableOpacity onPress={() => router.push('/(tabs)/allItems' as never) }>
-              <Text style={styles.seeAllText}>View All</Text>
+              <Text style={styles.seeAllText}>{t('viewAll')}</Text>
             </TouchableOpacity>
           </View>
           
@@ -255,9 +258,9 @@ export default function DashboardScreen() {
                   />
                 </View>
                 <View style={styles.recentInfo}>
-                  <Text style={styles.recentName}>{engine.name}</Text>
+                  <Text style={styles.recentName}>{t(engine.name)}</Text>
                   <Text style={styles.recentDetails}>
-                    {engine.count} parts • {Object.values(engine.partBreakdown).filter((count: any) => count > 0).length} categories
+                    {engine.count} {t('part')} • {Object.values(engine.partBreakdown).filter((count: any) => count > 0).length} {t('categories')}
                   </Text>
                 </View>
                 <Ionicons name="chevron-forward" size={16} color={Colors.text.tertiary} />

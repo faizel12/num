@@ -82,7 +82,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Dashboard',
+            title: t('home'),
             tabBarIcon: ({ color, focused }) => (
               <View style={{
                 width: 44,
@@ -94,7 +94,7 @@ export default function TabLayout() {
               }}>
                 <FontAwesome 
                   size={22} 
-                  name="dashboard" 
+                  name="home" 
                   color={color} 
                 />
               </View>
