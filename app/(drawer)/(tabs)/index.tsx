@@ -1,7 +1,8 @@
 // app/(tabs)/index.tsx (Dashboard)
 import { useProductForm } from '@/hooks/useProductForm';
+import { useTodo } from '@/hooks/useTodo'; // Adjust path as needed
 import { useTranslation } from '@/hooks/useTranslation';
-import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -19,6 +20,10 @@ import Colors from '../colors';
 const { width } = Dimensions.get('window');
 
 export default function DashboardScreen() {
+
+  const { getTodoStatistics } = useTodo();
+  const todoStats = getTodoStatistics();
+
   const { t } = useTranslation();
 
   const router = useRouter();
@@ -89,7 +94,6 @@ export default function DashboardScreen() {
         {/* Header Section */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>{t('welcomeTo')}</Text>
             <Text style={styles.appTitle}>{t('enginePartsCatalog')}</Text>
           </View>
           <TouchableOpacity 
@@ -100,27 +104,6 @@ export default function DashboardScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Overview Cards */}
-        <View style={styles.overviewSection}>
-          <View style={styles.overviewRow}>
-            <View style={[styles.overviewCard, styles.totalCard]}>
-              <View style={styles.cardIcon}>
-                <FontAwesome5 name="boxes" size={20} color={Colors.primary[500]} />
-              </View>
-              <Text style={styles.overviewNumber}>{summary.totalProducts}</Text>
-              <Text style={styles.overviewLabel}>{t('totalParts')}</Text>
-            </View>
-
-            <View style={[styles.overviewCard, styles.partCard]}>
-              <View style={styles.cardIcon}>
-                <MaterialIcons name="precision-manufacturing" size={20} color={Colors.primary[500]} />
-              </View>
-              <Text style={styles.overviewNumber}>{summary.registeredEngineTypes}</Text>
-              <Text style={styles.overviewLabel}>{t('activeEngineTypes')}</Text>
-            </View>
-          </View>
-
-        </View>
 
         {/* Top Engine Types */}
         <View style={styles.section}>
@@ -287,6 +270,45 @@ export default function DashboardScreen() {
           </View>
         )}
 
+        {/* Todo Statistics Section */}
+<View style={styles.section}>
+  <View style={styles.sectionHeader}>
+    <Text style={styles.sectionTitle}>{t('taskOverview')}</Text>
+    <TouchableOpacity onPress={() => router.push('/(drawer)/todo')}>
+      <Text style={styles.seeAllText}>{t('viewTasks')}</Text>
+    </TouchableOpacity>
+  </View>
+  
+  <View style={styles.todoStatsContainer}>
+    <View style={styles.todoStatCard}>
+      <Text style={styles.todoStatNumber}>{todoStats.total}</Text>
+      <Text style={styles.todoStatLabel}>{t('totalTasks')}</Text>
+    </View>
+    
+    <View style={styles.todoStatCard}>
+      <Text style={[styles.todoStatNumber, { color: Colors.status.success }]}>
+        {todoStats.completed}
+      </Text>
+      <Text style={styles.todoStatLabel}>{t('completed')}</Text>
+    </View>
+    
+    <View style={styles.todoStatCard}>
+      <Text style={[styles.todoStatNumber, { color: Colors.status.warning }]}>
+        {todoStats.pending}
+      </Text>
+      <Text style={styles.todoStatLabel}>{t('pending')}</Text>
+    </View>
+    
+    <View style={styles.todoStatCard}>
+      <Text style={[styles.todoStatNumber, { color: Colors.status.error }]}>
+        {todoStats.overdue}
+      </Text>
+      <Text style={styles.todoStatLabel}>{t('overdue')}</Text>
+    </View>
+  </View>
+
+</View>
+
       </Animated.View>
     </ScrollView>
   );
@@ -404,7 +426,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    color: Colors.text.primary,
+    color: Colors.text.secondary,
     fontSize: 18,
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -602,4 +624,61 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  // Add these styles to your dashboard stylesheet
+todoStatsContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  backgroundColor: Colors.background.secondary,
+  borderRadius: 16,
+  padding: 16,
+  marginBottom: 12,
+},
+todoStatCard: {
+  alignItems: 'center',
+  flex: 1,
+},
+todoStatNumber: {
+  color: Colors.text.primary,
+  fontSize: 20,
+  fontWeight: '700',
+  marginBottom: 4,
+},
+todoStatLabel: {
+  color: Colors.text.tertiary,
+  fontSize: 11,
+  fontWeight: '500',
+  textAlign: 'center',
+},
+completionContainer: {
+  backgroundColor: Colors.background.secondary,
+  borderRadius: 16,
+  padding: 16,
+},
+completionHeader: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 8,
+},
+completionText: {
+  color: Colors.text.primary,
+  fontSize: 14,
+  fontWeight: '600',
+},
+completionPercent: {
+  color: Colors.primary[500],
+  fontSize: 16,
+  fontWeight: '700',
+},
+progressBar: {
+  height: 6,
+  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  borderRadius: 3,
+  overflow: 'hidden',
+},
+progressFill: {
+  height: '100%',
+  backgroundColor: Colors.primary[500],
+  borderRadius: 3,
+},
 });

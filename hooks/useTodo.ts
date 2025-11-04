@@ -289,7 +289,58 @@ export const useTodo = () => {
     return dueDate.getTime() === today.getTime();
   };
 
+// Add these to your return statement
+const getTodosByPriority = (priority: 'low' | 'medium' | 'high') => {
+  return todos.filter(todo => todo.priority === priority);
+};
+
+const getUpcomingTodos = (days: number = 7) => {
+  const today = new Date();
+  const futureDate = new Date();
+  futureDate.setDate(today.getDate() + days);
+  
+  return todos.filter(todo => {
+    if (!todo.dueDate || todo.completed) return false;
+    const dueDate = new Date(todo.dueDate);
+    return dueDate >= today && dueDate <= futureDate;
+  });
+};
+
+const getCompletedCount = () => {
+  return todos.filter(todo => todo.completed).length;
+};
+
+const getPendingCount = () => {
+  return todos.filter(todo => !todo.completed).length;
+};
+
+const getOverdueCount = () => {
+  return todos.filter(todo => isOverdue(todo)).length;
+};
+
+  const getTodoStatistics = () => {
+    const total = todos.length;
+    const completed = getCompletedCount();
+    const pending = getPendingCount();
+    const overdue = getOverdueCount();
+    
+    const priorityStats = {
+      high: todos.filter(todo => todo.priority === 'high').length,
+      medium: todos.filter(todo => todo.priority === 'medium').length,
+      low: todos.filter(todo => todo.priority === 'low').length,
+    };
+    
+    return {
+      total,
+      completed,
+      pending,
+      overdue,
+      completionRate: total > 0 ? (completed / total) * 100 : 0,
+      priorityStats
+    };
+  };
   return {
+    getTodoStatistics,
     todos,
     loading,
     addTodo,
