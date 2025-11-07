@@ -5,17 +5,17 @@ import {
   ActivityIndicator,
   Alert,
   Image,
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from "react-native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 import Colors from "../(drawer)/colors";
 import { useProductForm } from "../../hooks/useProductForm";
 import { useTranslation } from "../../hooks/useTranslation";
@@ -239,20 +239,18 @@ export default function EditScreen() {
   }
 
   return (
-    <KeyboardAvoidingView 
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    style={{ flex: 1, backgroundColor: '#0A1931' }} // ← SET SAME BACKGROUND COLOR
-    keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 90}
-  >
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
+<KeyboardAwareScrollView
+  style={{ flex: 1, backgroundColor: '#0A1931' }}
+  contentContainerStyle={{ flexGrow: 1 }}
+  showsVerticalScrollIndicator={false}
+  enableOnAndroid={true}
+  extraHeight={410} // Normal value
+  keyboardShouldPersistTaps="handled"
+>
+<View style={[styles.container, { paddingBottom:120}]}>
         <Text style={styles.title}>{t("edit")}</Text>
 
-        {/* Debug Info - Remove this after testing */}
-        {/* <View style={styles.debugInfo}>
-          <Text style={styles.debugText}>Editing Item ID: {id}</Text>
-          <Text style={styles.debugText}>Found: {item ? 'Yes' : 'No'}</Text>
-        </View> */}
+  
 
         {/* Name Input */}
         <View style={styles.inputContainer}>
@@ -415,8 +413,7 @@ export default function EditScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 const styles = StyleSheet.create({
@@ -453,6 +450,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
+    flexGrow:1
   },
   loadingContainer: {
     flex: 1,

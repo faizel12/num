@@ -618,7 +618,7 @@ export const useProductForm = () => {
             const products:any = db.getAllSync('SELECT * FROM products ORDER BY timestamp DESC');
             
             // Convert image_paths string back to array
-            const itemsWithImages = products.map(product => ({
+            const itemsWithImages = products.map((product:any) => ({
                 ...product,
                 imageUris: product.image_paths ? JSON.parse(product.image_paths) : [],
             }));

@@ -1,13 +1,10 @@
 
 import { useTranslation } from '@/hooks/useTranslation';
 import React, { useState } from 'react';
-
 import {
     Alert,
     Image,
-    KeyboardAvoidingView,
     Modal,
-    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -16,6 +13,7 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useProductForm } from '../hooks/useProductForm';
 
 export default function ProductForm() {
@@ -109,13 +107,15 @@ export default function ProductForm() {
 
     return (
         
-            // <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
-            <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ flex: 1, backgroundColor: '#0A1931' }} // ← SET SAME BACKGROUND COLOR
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 90}
-          >
-       <ScrollView style={styles.scrollContainer}>
+<KeyboardAwareScrollView
+  style={{ flex: 1, backgroundColor: '#0A1931' }}
+  contentContainerStyle={{ flexGrow: 1 }}
+  showsVerticalScrollIndicator={false}
+  enableOnAndroid={true}
+  extraHeight={210}
+  keyboardShouldPersistTaps="handled"
+>
+
             <View style={styles.container}>
                 {/* Current Form Inputs */}
                 <Text style={styles.sectionTitle}>{t('addItem')}</Text>
@@ -250,48 +250,9 @@ export default function ProductForm() {
                     </TouchableOpacity>
                 </View>
 
-                {/* Saved Items Display */}
-                {/* <View style={styles.savedSection}>
-                    <View style={styles.savedHeader}>
-                        <Text style={styles.sectionTitle}>{t('savedItems')} ({savedItems.length})</Text>
-                        {savedItems.length > 0 && (
-                            <TouchableOpacity onPress={handleClearAll}>
-                                <Text style={styles.clearAllText}>{t('clearAllData')}</Text>
-                            </TouchableOpacity>
-                        )}
-                    </View>
-
-                    {savedItems.map((item:any) => (
-                        <View key={item.id} style={styles.savedItem}>
-                            {item.imageUris && item.imageUris.length > 0 && (
-                                <ScrollView horizontal style={styles.savedImagesContainer}>
-                                    {item.imageUris.map((imageUri:any, index:any) => (
-                                        <Image 
-                                            key={index} 
-                                            source={{ uri: imageUri }} 
-                                            style={styles.savedImage} 
-                                        />
-                                    ))}
-                                </ScrollView>
-                            )}
-                            <View style={styles.savedDetails}>
-                                <Text style={styles.savedText}><Text style={styles.bold}>{t('name')}:</Text> {item.name}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>{t('carType')}:</Text> {item.size}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>{t('condition')}:</Text> {item.condition}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>{t('part')}:</Text> {item.part}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>{t('description')}:</Text> {item.description}</Text>
-                                <Text style={styles.savedText}><Text style={styles.bold}>{t('price')}:</Text> {item.price}</Text>
-                            </View>
-                        </View>
-                    ))}
-
-                    {savedItems.length === 0 && (
-                        <Text style={styles.noItemsText}>No saved items yet</Text>
-                    )}
-                </View> */}
             </View>
-        </ScrollView>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
+
 
     );
 }

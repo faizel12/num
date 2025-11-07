@@ -170,7 +170,7 @@ export default function CarTypeScreen({ carType }: CarTypeScreenProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{carType} 
+      <Text style={styles.title}>{t(carType as any)} 
         {isAmharic ? ' እቃዎች' : ' Items'} ({filteredItems.length})
       </Text>
       

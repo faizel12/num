@@ -63,11 +63,21 @@ export default function DashboardScreen() {
     setRefreshing(false);
   };
 
-  const navigateToEngineType = (engineType: string) => {
+  // const navigateToEngineType = (engineType: string) => {
 
-    console.log("first", engineType.toLocaleLowerCase());
-    router.push(`/${engineType.toLocaleLowerCase()}` as never);
+  //   console.log("first", engineType.toLocaleLowerCase());
+  //   router.push(`/${engineType.toLocaleLowerCase()}` as never);
+  // };
+
+  const navigateToEngineType = (engineType: string) => {
+    // Remove all spaces using a regular expression and convert to lower case
+    const formattedEngineType = engineType.replace(/\s/g, '').toLocaleLowerCase();
+  
+    console.log("first", formattedEngineType);
+    // Push the formatted string to the router
+    router.push(`/${formattedEngineType}` as never);
   };
+  
 
   const navigateToAddItem = () => {
     router.push('/addItem');
@@ -188,7 +198,7 @@ export default function DashboardScreen() {
               onPress={() => router.push('/(tabs)/allItems' as never)}
             >
               <View style={[styles.actionIcon, { backgroundColor: 'rgba(52, 199, 89, 0.1)' }]}>
-                <Ionicons name="checkmark-done" size={32} color={Colors.status.success} />
+                <Ionicons name="car" size={32} color={Colors.status.success} />
               </View>
               <Text style={styles.actionText}>{t('inventoryCheck')}</Text>
             </TouchableOpacity>
@@ -235,7 +245,7 @@ export default function DashboardScreen() {
               >
                 <View style={styles.recentIcon}>
                   <FontAwesome5 
-                    name="box" 
+                    name="car" 
                     size={16} 
                     color={Colors.primary[500]} 
                   />

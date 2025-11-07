@@ -318,7 +318,7 @@ const counts=getCountsByEngineType()
                 }
               />
               <NavigationItem
-                route="/highRoof"
+                route="/highroof"
                 // label="High Roof "
                 label={t('highRoof') +  `  (${counts['High Roof'] || 0})`}
 
@@ -328,7 +328,7 @@ const counts=getCountsByEngineType()
                   <Ionicons 
                     name="car-sport" 
                     size={18} 
-                    color={isActive('/highRoof') ? Colors.navy[900] : Colors.text.secondary} 
+                    color={isActive('/highroof') ? Colors.navy[900] : Colors.text.secondary} 
                   />
                 }
               />

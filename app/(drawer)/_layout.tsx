@@ -109,8 +109,8 @@ export default function Layout() {
       <Drawer.Screen name="3l" options={{ title: `3L` }} />
       <Drawer.Screen name="2l" options={{ title: `2L` }} />
       <Drawer.Screen name="2lt" options={{ title: `2LT` }} />
-      <Drawer.Screen name="aynamaw" options={{ title: `Aynamaw` }} />
-      <Drawer.Screen name="highRoof" options={{ title: `highroof` }} />
+      <Drawer.Screen name="aynamaw" options={{ title: `${t('aynamaw')}` }} />
+      <Drawer.Screen name="highroof" options={{ title: `${t('highRoof')}` }} />
       <Drawer.Screen name="dolphin" options={{ title: `${t('dolphin')}` }} />
       <Drawer.Screen name="abadula" options={{ title: `${t('abadula')}` }} />
       <Drawer.Screen name="other" options={{ title: `${t('other')}` }} />
